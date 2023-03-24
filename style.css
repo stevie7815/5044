@@ -64,3 +64,20 @@ header {
     font-family: sans-serif;
     text-transform: capitalize;
 }
+
+/* Linegraph for MH */
+svg {
+    padding: 50px;
+}
+
+.line {
+    fill: none;
+}
+
+.germany {
+    stroke: red;
+}
+
+.uk {
+    stroke: blue;
+}
