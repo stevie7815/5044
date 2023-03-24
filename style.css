@@ -1,19 +1,25 @@
-html, body{
+html,
+body {
     margin: 0;
 }
 
-*{
+* {
     font-family: Helvetica, sans-serif;
     box-sizing: border-box;
 }
 
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+  }
+  
 .wrapper {
     width: 85%;
     margin-bottom: 50px;
     margin: auto;
-  }
+}
 
-  footer{
+footer {
     position: fixed;
     left: 0;
     bottom: 0;
@@ -25,9 +31,23 @@ html, body{
     font-weight: bold;
 }
 
-header{
+header {
     padding: 25px;
     text-align: center;
     background-color: white;
 }
 
+.dataset {
+    background-color: #97c5d8;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    opacity: 0.9;
+    border-radius: 5px;
+}
+
+.dataset:hover {
+    opacity: 2;
+}
