@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="style.css" />
+
 </head>
 
 <body>
@@ -35,6 +36,8 @@
 
     //this is the linegraph
 
+    (async () => {
+
     const dataPath = "dataset.csv";
 
     const width = 500; 
@@ -59,11 +62,12 @@
                         .domain(timeExtent)
                         .range([0, width]);
 
-        const migrantExtent = d3.extent(d3.hierarchy(rolledData).leaves().map(d => d.data[0]));
-        //console.log(migrantExtent);
+        //Below code needs to be changed to get the max value of the data on Y-axis
+        const countExtent = d3.extent(d3.hierarchy(rolledData).leaves().map(d => d.data[1]));
+        console.log(countExtent);
 
        const yScale = d3.scaleLinear()
-                       .domain(migrantExtent)
+                       .domain(countExtent)
                        .range([height, 0]);
 
         
@@ -94,21 +98,23 @@
 				.x((d) => margin + xScale(new Date(d[0])))
 				.y((d) => yScale(d[1]));
 
-            const no_signs_of_mental_illness = rolledData.get("FALSE");
-            //console.log(noMentalIlness);
-            const signs_of_mental_illness = rolledData.get("TRUE");
-            //console.log(mentalIllness);
+            const no_mental_illness = rolledData.get("FALSE");
+            console.log(no_mental_illness);
+            const mental_illness = rolledData.get("TRUE");
+            console.log(mental_illness);
 
             svg.append("path")
-				.datum(no_signs_of_mental_illness)
-				.attr("class", "line no_signs_of_mental_illness")
+				.datum(no_mental_illness)
+				.attr("class", "line no_mental_illness")
 				.attr("d", lineGenerator);
 
 			svg.append("path")
-				.datum(signs_of_mental_illness)
-				.attr("class", "line signs_of_mental_illness")
+				.datum(mental_illness)
+				.attr("class", "line mental_illness")
 				.attr("d", lineGenerator);
         })
+
+    })();
 
         // end of line graph
 
