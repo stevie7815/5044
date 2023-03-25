@@ -40,34 +40,7 @@
 
 </html>
 <script>
-    // MENTAL HEALTH LINEGRAPH VISUALISATION
-	(async () => {
-			const dataPath = "dataset.csv";
-
-			const width = 800;					//specifies the width, height and margins of our SVG element
-			const height = 600;
-			const margin = 100;
-
-			const rowConverter = (d) => {			//ES6 function declaration style. Feel free to use rowConverter = function(d){}
-				let timeData = d.TIME;			//converter applies to every datapoint. We want the DATE attribute for each point
-				let datum = timeData.split("M");//splits the string at the "M" character
-
-				return {
-					date: new Date(datum[0], datum[1] - 1),	//JS months begin at 0, so we need to -1
-					geo: d.GEO,								//other attributes remain as they are
-					value: d.VALUE
-				}
-			}
-
-        //this is the linegraph
-
-        < div id = "lineGraph" >
-        
-        
-        
-        
-        </div >
-
+ 
 
 
 </script>
