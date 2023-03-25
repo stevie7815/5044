@@ -21,6 +21,7 @@
         </div>
         <p>main</p>
         <p></p>
+        <div id="lineGraph"></div>
 
     </main>
     <footer>
@@ -29,15 +30,86 @@
 </body>
 
 </html>
+
 <script>
 
     //this is the linegraph
 
-    <div id="lineGraph">
+    const dataPath = "dataset.csv";
+
+    const width = 500; 
+    const height = 300; 
+    const margin = 50; 
+
+    d3.csv(dataPath)
+        .then((data) => {
+            //console.log(data);
+            //console.table(data)
+
+        //const nestedData = d3.group(data, d => d.signs_of_mental_illness, d => d.date);
+        //console.log(nestedData);
+
+        const rolledData = d3.rollup(data, v => d3.sum(v, d => d.value), d => d.signs_of_mental_illness, d => d.date);
+        //console.log(rolledData);
+
+        const timeExtent = d3.extent(data, (d) => d.date);
+        //console.log(timeExtent);
+
+        const xScale = d3.scaleTime()
+                        .domain(timeExtent)
+                        .range([0, width]);
+
+        const migrantExtent = d3.extent(d3.hierarchy(rolledData).leaves().map(d => d.data[0]));
+        //console.log(migrantExtent);
+
+       const yScale = d3.scaleLinear()
+                       .domain(migrantExtent)
+                       .range([height, 0]);
+
         
-        
-        
-        
-        </div>
+        const x_axis = d3.axisBottom(xScale);
+        const y_axis = d3.axisLeft(yScale);
+
+        const svg = d3.select("#lineGraph")
+            .append("svg")
+            .attr("width", width + margin)
+            .attr("height", height + margin);
+
+            svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", `translate(${margin},${height})`) //make sure you get your brackets right!
+				.call(x_axis.tickFormat(d3.timeFormat("%d-%m-%Y")))
+				.selectAll("text")
+				.style("text-anchor", "end")
+				.attr("dx", "-0.8em")
+				.attr("dy", "0.15em")
+				.attr("transform", "rotate(-65)");
+
+            svg.append("g")
+				.attr("class", "y axis")
+				.attr("transform", `translate(${margin},0)`)
+				.call(y_axis);
+
+            const lineGenerator = d3.line()
+				.x((d) => margin + xScale(new Date(d[0])))
+				.y((d) => yScale(d[1]));
+
+            const no_signs_of_mental_illness = rolledData.get("FALSE");
+            //console.log(noMentalIlness);
+            const signs_of_mental_illness = rolledData.get("TRUE");
+            //console.log(mentalIllness);
+
+            svg.append("path")
+				.datum(no_signs_of_mental_illness)
+				.attr("class", "line no_signs_of_mental_illness")
+				.attr("d", lineGenerator);
+
+			svg.append("path")
+				.datum(signs_of_mental_illness)
+				.attr("class", "line signs_of_mental_illness")
+				.attr("d", lineGenerator);
+        })
+
+        // end of line graph
 
 </script>
