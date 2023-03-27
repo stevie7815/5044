@@ -81,3 +81,23 @@ svg {
 .uk {
     stroke: blue;
 }
+
+
+
+
+circle{
+    stroke: black;
+    stroke-width: 0.5px;
+    fill: blue;
+    opacity: 0.75;
+}
+
+.axis{
+    font-size: 10pt;
+    font-family: sans-serif;
+    color: grey;
+}
+
+.tick{
+    fill: grey;
+}
