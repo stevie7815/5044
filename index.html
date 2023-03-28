@@ -38,84 +38,88 @@
 
     (async () => {
 
-    const dataPath = "dataset.csv";
+const dataPath = "dataset.csv";
 
-    const width = 500; 
-    const height = 300; 
-    const margin = 50; 
+const width = 600; 
+const height = 300; 
+const margin = 50; 
 
-    d3.csv(dataPath)
-        .then((data) => {
-            //console.log(data);
-            //console.table(data)
+const data = await d3.csv(dataPath);
 
-        //const nestedData = d3.group(data, d => d.signs_of_mental_illness, d => d.date);
-        //console.log(nestedData);
+d3.csv(dataPath)
+    .then((data) => {
+        //console.log(data);
+        //console.table(data)
 
-        const rolledData = d3.rollup(data, v => d3.sum(v, d => d.value), d => d.signs_of_mental_illness, d => d.date);
-        //console.log(rolledData);
+    //const nestedData = d3.group(data, d => d.signs_of_mental_illness, d => d.date);
+    //console.log(nestedData);
 
-        const timeExtent = d3.extent(data, (d) => d.date);
-        //console.log(timeExtent);
+    const rolledData = d3.rollup(data, v => d3.sum(v, d => d.Killed), d => d.signs_of_mental_illness, d => d.date);
+    //console.log(rolledData);
 
-        const xScale = d3.scaleTime()
-                        .domain(timeExtent)
-                        .range([0, width]);
+    const timeExtent = d3.extent(data, (d) => d.date);
 
-        //Below code needs to be changed to get the max value of the data on Y-axis
-        const countExtent = d3.extent(d3.hierarchy(rolledData).leaves().map(d => d.data[1]));
-        console.log(countExtent);
+    //console.log(timeExtent);
 
-       const yScale = d3.scaleLinear()
-                       .domain(countExtent)
-                       .range([height, 0]);
+    
+    const xScale = d3.scaleTime()
+            .domain(timeExtent)
+            .range([0, width]);
 
-        
-        const x_axis = d3.axisBottom(xScale);
-        const y_axis = d3.axisLeft(yScale);
+    //Below code needs to be changed to get the max value of the data on Y-axis
+    const countKilled = d3.extent(d3.hierarchy(rolledData).leaves().map(d => d.data[1]));
+    //console.log(countKilled);
 
-        const svg = d3.select("#lineGraph")
-            .append("svg")
-            .attr("width", width + margin)
-            .attr("height", height + margin);
+   const yScale = d3.scaleLinear()
+                .domain(countKilled)
+                .range([height, 0]);
+    
+    const x_axis = d3.axisBottom(xScale);
+    const y_axis = d3.axisLeft(yScale);
 
-            svg.append("g")
-				.attr("class", "x axis")
-				.attr("transform", `translate(${margin},${height})`) //make sure you get your brackets right!
-				.call(x_axis.tickFormat(d3.timeFormat("%d-%m-%Y")))
-				.selectAll("text")
-				.style("text-anchor", "end")
-				.attr("dx", "-0.8em")
-				.attr("dy", "0.15em")
-				.attr("transform", "rotate(-65)");
+    const svg = d3.select("#lineGraph")
+        .append("svg")
+        .attr("width", width + margin)
+        .attr("height", height + margin);
 
-            svg.append("g")
-				.attr("class", "y axis")
-				.attr("transform", `translate(${margin},0)`)
-				.call(y_axis);
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", `translate(${margin},${height})`)
+        .call(x_axis.tickFormat(d3.timeFormat("%Y-%m-%d")))
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-0.8em")
+        .attr("dy", "0.15em")
+        .attr("transform", "rotate(-65)");
 
-            const lineGenerator = d3.line()
-				.x((d) => margin + xScale(new Date(d[0])))
-				.y((d) => yScale(d[1]));
+    svg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", `translate(${margin},0)`)
+        .call(y_axis);
 
-            const no_mental_illness = rolledData.get("FALSE");
-            console.log(no_mental_illness);
-            const mental_illness = rolledData.get("TRUE");
-            console.log(mental_illness);
+    const lineGenerator = d3.line()
+        .x((d) => margin + xScale(d[0]))
+        .y((d) => yScale(d[1]));
 
-            svg.append("path")
-				.datum(no_mental_illness)
-				.attr("class", "line no_mental_illness")
-				.attr("d", lineGenerator);
+    let noMentalIllness = rolledData.get("FALSE");
+    console.log(noMentalIllness);
+    let mentalIllness = rolledData.get("TRUE");
+    console.log(mentalIllness);
 
-			svg.append("path")
-				.datum(mental_illness)
-				.attr("class", "line mental_illness")
-				.attr("d", lineGenerator);
-        })
+    
+    svg.append("path")
+            .datum(noMentalIllness)
+            .attr("class", "line")
+            .attr("d", lineGenerator);
 
-    })();
+    svg.append("path")
+            .datum(mentalIllness)
+            .attr("class", "line")
+            .attr("d", lineGenerator);            
+    })
 
-        // end of line graph
+})();
+
+    // end of line graph
 
 </script>
