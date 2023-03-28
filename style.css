@@ -12,7 +12,7 @@ hr {
     border: 1px solid #f1f1f1;
     margin-bottom: 25px;
   }
-  
+
 .wrapper {
     width: 85%;
     margin-bottom: 50px;
@@ -29,6 +29,7 @@ footer {
     color: white;
     padding: 10px;
     font-weight: bold;
+    margin-top: 10px;
 }
 
 header {
@@ -51,3 +52,79 @@ header {
 .dataset:hover {
     opacity: 2;
 }
+
+#map {
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    height: 500px;
+}
+
+.infobox{
+    font-size: large;
+    font-family: sans-serif;
+    text-transform: capitalize;
+}
+
+/* 
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.x.axis path{
+    display: none;
+}
+
+.legend {
+    font-size: 14px;
+    font-family: sans-serif;
+    fill: #000;
+}
+*/
+
+/*.chart {
+    width: 800px;
+    height: 500px;
+    margin: 0 auto;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover{
+    fill: orange;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    display: none;
+}
+
+*/
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover{
+    fill: green;
+}
+
+.axis {
+    font-size:  14px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
