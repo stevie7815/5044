@@ -29,6 +29,7 @@ footer {
     color: white;
     padding: 10px;
     font-weight: bold;
+    margin-top: 10px;
 }
 
 header {
@@ -65,39 +66,65 @@ header {
     text-transform: capitalize;
 }
 
-/* Linegraph for MH */
-svg {
-    padding: 50px;
-}
-
-.line {
+/* 
+.axis path,
+.axis line {
     fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
 
-.germany {
-    stroke: red;
+.x.axis path{
+    display: none;
 }
 
-.uk {
-    stroke: blue;
-}
-
-
-
-
-circle{
-    stroke: black;
-    stroke-width: 0.5px;
-    fill: blue;
-    opacity: 0.75;
-}
-
-.axis{
-    font-size: 10pt;
+.legend {
+    font-size: 14px;
     font-family: sans-serif;
-    color: grey;
+    fill: #000;
+}
+*/
+
+/*.chart {
+    width: 800px;
+    height: 500px;
+    margin: 0 auto;
 }
 
-.tick{
-    fill: grey;
+.bar {
+    fill: steelblue;
 }
+
+.bar:hover{
+    fill: orange;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    display: none;
+}
+
+*/
+
+.bar {
+    fill: steelblue;
+}
+
+.bar:hover{
+    fill: green;
+}
+
+.axis {
+    font-size:  14px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
