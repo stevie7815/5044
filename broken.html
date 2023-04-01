@@ -75,12 +75,12 @@
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        d3.csv("data/dataset.csv").then(function (data) {
+        d3.csv("data/dataset2.csv").then(function (data) {
 
             // process data
-            const ageGenderCounts = d3.rollup(data, v => v.length, d => d.age, d => d.gender);
-            const ageGenderData = Array.from(ageGenderCounts, ([age, genderCounts]) => {
-                const genderData = Array.from(genderCounts, ([gender, count]) => {
+            const ageCounts = d3.rollup(data, v => v.length, d => d.ageGroup, d => d.ageCount);
+            const ageData = Array.from(ageGenderCounts, ([ageGroup, ageCounts]) => {
+                const countData = Array.from(genderCounts, ([gender, count]) => {
                     return { age, gender, count};
                 });
                 return genderData;
