@@ -47,7 +47,7 @@
         <br><br>
 
         </div>
-        <h1>Age Group</h1>
+        <h1>Age</h1>
 
         <div id="chart"></div>
     </main>
@@ -56,6 +56,9 @@
     </footer>
 
     <script>
+
+
+
 
         // set dimensions and margin
         var margin = { top: 20, right: 20, bottom: 70, left: 40 },
@@ -70,110 +73,145 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // define data
-        var data = [
-            {
-                age_group: "0-10",
-                count: 50,
-            },
-            {
-                age_group: "11-20",
-                count: 100,
-            },
-            {
-                age_group: "21-30",
-                count: 200,
-            },
-            {
-                age_group: "31-40",
-                count: 300,
-            },
-            {
-                age_group: "41-50",
-                count: 250,
-            },
-            {
-                age_group: "51-60",
-                count: 150,
-            },
-            {
-                age_group: "61-70",
-                count: 100,
-            },
-            {
-                age_group: "71-80",
-                count: 50,
-            },
-            {
-                age_group: "81-90",
-                count: 20,
-            }
-        ];
+        d3.csv("data/dataset.csv").then(function (data) {
+            // define age groups
+            var ageRanges = [
+                { minAge: 0, maxAge: 10, label: "0-10" },
+                { minAge: 11, maxAge: 20, label: "11-20" },
+                { minAge: 21, maxAge: 30, label: "21-30" },
+                { minAge: 31, maxAge: 40, label: "31-40" },
+                { minAge: 41, maxAge: 50, label: "41-50" },
+                { minAge: 51, maxAge: 60, label: "51-60" },
+                { minAge: 61, maxAge: 70, label: "61-70" },
+                { minAge: 71, maxAge: 80, label: "71-80" },
+                { minAge: 81, maxAge: 90, label: "81-90" },
+            ];
 
-        var tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
-
-        // define scales
-        var x = d3.scaleBand()
-            .range([0, width])
-            .padding(0.2);
-
-        var y = d3.scaleLinear()
-            .range([height, 0]);
-
-        var percentageDiv = d3.select("body").append("div")
-            .attr("class", "percentage");
-
-        x.domain(data.map(function (d) { return d.age_group; }));
-        y.domain([0, d3.max(data, function (d) { return d.count; })]);
-
-        // x-axis
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-
-        // x-axis label
-        svg.append("text")
-            .attr("transform", "translate(" + (width / 2) + "," + (height + margin.bottom - 10) + ")")
-            .style("text-anchor", "middle")
-            .text("Age Group")
-
-        // y-axis
-        svg.append("g")
-            .call(d3.axisLeft(y));
-
-        // x-axis label
-        svg.append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 0 - margin.left)
-            .attr("x", 0 - (height / 2))
-            .attr("dy", "1em")
-            .style("text-anchor", "middle")
-            .text("Count")
-
-        // add data points
-        svg.selectAll(".bar")
-            .data(data)
-            .enter().append("rect")
-            .attr("class", "bar")
-            .attr("x", function (d) { return x(d.age_group); })
-            .attr("width", x.bandwidth())
-            .attr("y", function (d) { return y(d.count); })
-            .attr("height", function (d) { return height - y(d.count); })
-            .on("mouseover", function (event, d) {
-                var percentage = d.count / d3.sum(data, function (d) { return d.count; }) * 100;
-
-                // push into percentage div
-                percentageDiv.html("Percentage: " + percentage.toFixed(1) + "%");
-
+            // group data
+            var groupedData = d3.nest()
+            .key(function(d){
+                // which age belongs to each range
+                var age = parseInt(d.age);
+                for (var i = 0; i < ageRanges.length; i++){
+                    if (age >= ageRanges[i].minAge && age <= ageRanges[i].maxAge){
+                        return ageRanges[i].label;
+                    }
+                }
+                return "Unknown";
             })
-            .on("mouseout", function (event, d) {
-                console.log(tooltip)
-                tooltip.transition()
-                    .duration(500)
-                    .style("opacity", 0);
+            .rollup(function(v) {
+                return v.length;
             })
+            .entries(data);
 
+            console
+        }).catch(function (error) {
+            console.log(error);
+        });
+              /*  var data = [
+              {
+                  age_group: "0-10",
+                  count: 50,
+              },
+              {
+                  age_group: "11-20",
+                  count: 100,
+              },
+              {
+                  age_group: "21-30",
+                  count: 200,
+              },
+              {
+                  age_group: "31-40",
+                  count: 300,
+              },
+              {
+                  age_group: "41-50",
+                  count: 250,
+              },
+              {
+                  age_group: "51-60",
+                  count: 150,
+              },
+              {
+                  age_group: "61-70",
+                  count: 100,
+              },
+              {
+                  age_group: "71-80",
+                  count: 50,
+              },
+              {
+                  age_group: "81-90",
+                  count: 20,
+              }
+          ];
+  
+          var tooltip = d3.select("body").append("div")
+              .attr("class", "tooltip")
+              .style("opacity", 0);
+  
+          // define scales
+          var x = d3.scaleBand()
+              .range([0, width])
+              .padding(0.2);
+  
+          var y = d3.scaleLinear()
+              .range([height, 0]);
+  
+          var percentageDiv = d3.select("body").append("div")
+              .attr("class", "percentage");
+  
+          x.domain(data.map(function (d) { return d.age_group; }));
+          y.domain([0, d3.max(data, function (d) { return d.count; })]);
+  
+          // x-axis
+          svg.append("g")
+              .attr("transform", "translate(0," + height + ")")
+              .call(d3.axisBottom(x));
+  
+          // x-axis label
+          svg.append("text")
+              .attr("transform", "translate(" + (width / 2) + "," + (height + margin.bottom - 10) + ")")
+              .style("text-anchor", "middle")
+              .text("Age Group")
+  
+          // y-axis
+          svg.append("g")
+              .call(d3.axisLeft(y));
+  
+          // x-axis label
+          svg.append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 0 - margin.left)
+              .attr("x", 0 - (height / 2))
+              .attr("dy", "1em")
+              .style("text-anchor", "middle")
+              .text("Count")
+  
+          // add data points
+          svg.selectAll(".bar")
+              .data(data)
+              .enter().append("rect")
+              .attr("class", "bar")
+              .attr("x", function (d) { return x(d.age_group); })
+              .attr("width", x.bandwidth())
+              .attr("y", function (d) { return y(d.count); })
+              .attr("height", function (d) { return height - y(d.count); })
+              .on("mouseover", function (event, d) {
+                  var percentage = d.count / d3.sum(data, function (d) { return d.count; }) * 100;
+  
+                  // push into percentage div
+                  percentageDiv.html("Percentage: " + percentage.toFixed(1) + "%");
+  
+              })
+              .on("mouseout", function (event, d) {
+                  console.log(tooltip)
+                  tooltip.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+              })
+  */
     </script>
 </body>
 
