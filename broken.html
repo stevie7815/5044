@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <title>CS5044: Practical 2 </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://unpkg.com/topojson@3"></script>
+
+</head>
+
+<body>
+    <header>
+        <h1>Which Social Movements & Protests had the largest impact on police shootings?</h1>
+        <hr>
+    </header>
+    <main class="wrapper">
+        <div>
+            <a class="dataset" href="data/dataset.csv" target="_blank">Data Set</a>
+        </div>
+        <br><br>
+
+        <div class="categories_section">
+            <div class="category_cards">
+                <a href="byRace.html">
+                    <b>Police Shootings by Race</b>
+                </a>
+            </div>
+            <div class="category_cards_active">
+                <a href="age.html">
+                    <b>Age Groups</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <b>John Doe</b>
+            </div>
+            <div class="category_cards">
+                <b>John Doe</b>
+            </div>
+        </div>
+        <br><br>
+
+        </div>
+        <h1>Age Groups and Mental Health</h1>
+
+        <svg id="ageGenderChart" width="600" height="400"></svg>
+
+    </main>
+    <footer>
+        <p>Created by: sd302 & ifz1</p>
+    </footer>
+
+    <script>
+
+
+        // set dimensions and margins
+        var margin = {
+            top: 20,
+            right: 20,
+            bottom: 30,
+            left: 40
+        };
+        var width = 600 - margin.left - margin.right;
+        var height = 400 - margin.top - margin.bottom;
+
+        // create svg for age/gender chart
+        var svgAgeGender = d3.select("#ageGenderChart")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.left + margin.right)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        d3.csv("data/dataset.csv").then(function (data) {
+
+            // process data
+            const ageGenderCounts = d3.rollup(data, v => v.length, d => d.age, d => d.gender);
+            const ageGenderData = Array.from(ageGenderCounts, ([age, genderCounts]) => {
+                const genderData = Array.from(genderCounts, ([gender, count]) => {
+                    return { age, gender, count};
+                });
+                return genderData;
+            }).flat();
+
+            ageGenderData.sort((a, b) => d3.ascending(a.age, b.age) || d3.ascending(a.gender, b.gender));
+
+            // x y scale
+            const x = d3.scaleBand()
+                .domain(ageGenderData.map(d => d.age))
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(ageGenderData, d => d.count)])
+                .range([height, 0]);
+
+            // x axis
+            const xAxis = d3.axisBottom(x);
+
+            svgAgeGender.append("g")
+                .attr("transform", "translate(0" + height + ")")
+                .call(xAxis);
+
+            svgAgeGender.append("text") // x axis label
+                .attr("x", width / 2)
+                .attr("y", height + margin.bottom - -10)
+                .style("text-anchor", "middle")
+                .text("Age");
+
+            // y axis
+            const yAxis = d3.axisLeft(y);
+
+            svgAgeGender.append("g")
+                .call(yAxis);
+
+            svgAgeGender.append("text") // x axis label
+                .attr("x", -height / 2)
+                .attr("y", -margin.left + 10)
+                .style("transform", "rotate(-90)")
+                .style("text-anchor", "middle")
+                .text("Number of Shootings");
+
+            // add colour
+            const colour = d3.scaleOrdinal()
+                .domain(["Male", "Female"])
+                .range(["#1f77b4", "#ff7f0e"]);
+
+            // create bars
+            svgAgeGender.selectAll(".bar")
+                .data(ageGenderData)
+                .enter().append("rect")
+                .attr("x", d => x(d.age))
+                .attr("y", d => y(d.count))
+                .attr("width", x.bandwidth())
+                .attr("height", d => height - y(d.count))
+                .attr("fill", d => colour(d.gender));
+
+            // age labels
+            svgAgeGender.selectAll(".ageLabel")
+                .data(ageGenderData)
+                .enter().append("text")
+                .attr("class", "ageLabel")
+                .attr("x", d => x(d.age) + x.bandwidth() / 2)
+                .attr("y", height + margin.bottom - 5)
+                .attr("text-anchor", "middle")
+                .text(d => d.age);
+
+            // add legend
+            const legend = svgAgeGender.append("g")
+                .attr("class", "legend")
+                .attr("transform", "translate(" + (width - margin.right - 10) + "," + (margin.top + 10) + ")")
+                .selectAll("g")
+                .data(colour.domain().slice().reverse())
+                .enter().append("g")
+                .attr("transform", (d, i) => "translate(0," + i * 20 + ")");
+
+            legend.append("rect")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", 18)
+                .attr("height", 18)
+                .attr("fill", colour);
+
+            legend.append("rect")
+            .attr("x", -6)
+            .attr("y", 9)
+            .attr("dy", "0.35em")
+            .style("text-anchor", "end")
+            .text( d => d);
+
+        }).catch(function (error) {
+            console.log(error);
+        });
+
+    </script>
+</body>
+
+</html>

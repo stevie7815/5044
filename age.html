@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="style.css" />
 
     <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
 
 </head>
 
@@ -33,7 +34,7 @@
             </div>
             <div class="category_cards_active">
                 <a href="age.html">
-                    <b>Age Groups and Mental Health</b>
+                    <b>Age Groups</b>
                 </a>
             </div>
             <div class="category_cards">
@@ -46,10 +47,9 @@
         <br><br>
 
         </div>
-        <h1>Age Groups and Mental Health</h1>
+        <h1>Age Group</h1>
 
-        <svg id="ageGenderChart" width="600" height="400"></svg>
-
+        <div id="chart"></div>
     </main>
     <footer>
         <p>Created by: sd302 & ifz1</p>
@@ -57,124 +57,122 @@
 
     <script>
 
+        // set dimensions and margin
+        var margin = { top: 20, right: 20, bottom: 70, left: 40 },
+            width = 900 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
 
-        // set dimensions and margins
-        var margin = {
-            top: 20,
-            right: 20,
-            bottom: 30,
-            left: 40
-        };
-        var width = 600 - margin.left - margin.right;
-        var height = 400 - margin.top - margin.bottom;
-
-        // create svg for age/gender chart
-        var svgAgeGender = d3.select("#ageGenderChart")
+        // svg to chart div
+        var svg = d3.select("#chart").append("svg")
             .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        d3.csv("data/dataset.csv").then(function (data) {
+        // define data
+        var data = [
+            {
+                age_group: "0-10",
+                count: 50,
+            },
+            {
+                age_group: "11-20",
+                count: 100,
+            },
+            {
+                age_group: "21-30",
+                count: 200,
+            },
+            {
+                age_group: "31-40",
+                count: 300,
+            },
+            {
+                age_group: "41-50",
+                count: 250,
+            },
+            {
+                age_group: "51-60",
+                count: 150,
+            },
+            {
+                age_group: "61-70",
+                count: 100,
+            },
+            {
+                age_group: "71-80",
+                count: 50,
+            },
+            {
+                age_group: "81-90",
+                count: 20,
+            }
+        ];
 
-            // process data
-            const ageGenderCounts = d3.rollup(data, v => v.length, d => d.age, d => d.gender);
-            const ageGenderData = Array.from(ageGenderCounts, ([age, genderCounts]) => {
-                const genderData = Array.from(genderCounts, ([gender, count]) => {
-                    return { age, gender, count};
-                });
-                return genderData;
-            }).flat();
+        var tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
 
-            ageGenderData.sort((a, b) => d3.ascending(a.age, b.age) || d3.ascending(a.gender, b.gender));
+        // define scales
+        var x = d3.scaleBand()
+            .range([0, width])
+            .padding(0.2);
 
-            // x y scale
-            const x = d3.scaleBand()
-                .domain(ageGenderData.map(d => d.age))
-                .range([0, width])
-                .padding(0.1);
+        var y = d3.scaleLinear()
+            .range([height, 0]);
 
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(ageGenderData, d => d.count)])
-                .range([height, 0]);
+        var percentageDiv = d3.select("body").append("div")
+            .attr("class", "percentage");
 
-            // x axis
-            const xAxis = d3.axisBottom(x);
+        x.domain(data.map(function (d) { return d.age_group; }));
+        y.domain([0, d3.max(data, function (d) { return d.count; })]);
 
-            svgAgeGender.append("g")
-                .attr("transform", "translate(0" + height + ")")
-                .call(xAxis);
+        // x-axis
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
 
-            svgAgeGender.append("text") // x axis label
-                .attr("x", width / 2)
-                .attr("y", height + margin.bottom - -10)
-                .style("text-anchor", "middle")
-                .text("Age");
+        // x-axis label
+        svg.append("text")
+            .attr("transform", "translate(" + (width / 2) + "," + (height + margin.bottom - 10) + ")")
+            .style("text-anchor", "middle")
+            .text("Age Group")
 
-            // y axis
-            const yAxis = d3.axisLeft(y);
+        // y-axis
+        svg.append("g")
+            .call(d3.axisLeft(y));
 
-            svgAgeGender.append("g")
-                .call(yAxis);
+        // x-axis label
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Count")
 
-            svgAgeGender.append("text") // x axis label
-                .attr("x", -height / 2)
-                .attr("y", -margin.left + 10)
-                .style("transform", "rotate(-90)")
-                .style("text-anchor", "middle")
-                .text("Number of Shootings");
+        // add data points
+        svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function (d) { return x(d.age_group); })
+            .attr("width", x.bandwidth())
+            .attr("y", function (d) { return y(d.count); })
+            .attr("height", function (d) { return height - y(d.count); })
+            .on("mouseover", function (event, d) {
+                var percentage = d.count / d3.sum(data, function (d) { return d.count; }) * 100;
 
-            // add colour
-            const colour = d3.scaleOrdinal()
-                .domain(["Male", "Female"])
-                .range(["#1f77b4", "#ff7f0e"]);
+                // push into percentage div
+                percentageDiv.html("Percentage: " + percentage.toFixed(1) + "%");
 
-            // create bars
-            svgAgeGender.selectAll(".bar")
-                .data(ageGenderData)
-                .enter().append("rect")
-                .attr("x", d => x(d.age))
-                .attr("y", d => y(d.count))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.count))
-                .attr("fill", d => colour(d.gender));
-
-            // age labels
-            svgAgeGender.selectAll(".ageLabel")
-                .data(ageGenderData)
-                .enter().append("text")
-                .attr("class", "ageLabel")
-                .attr("x", d => x(d.age) + x.bandwidth() / 2)
-                .attr("y", height + margin.bottom - 5)
-                .attr("text-anchor", "middle")
-                .text(d => d.age);
-
-            // add legend
-            const legend = svgAgeGender.append("g")
-                .attr("class", "legend")
-                .attr("transform", "translate(" + (width - margin.right - 10) + "," + (margin.top + 10) + ")")
-                .selectAll("g")
-                .data(colour.domain().slice().reverse())
-                .enter().append("g")
-                .attr("transform", (d, i) => "translate(0," + i * 20 + ")");
-
-            legend.append("rect")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", 18)
-                .attr("height", 18)
-                .attr("fill", colour);
-
-            legend.append("rect")
-            .attr("x", -6)
-            .attr("y", 9)
-            .attr("dy", "0.35em")
-            .style("text-anchor", "end")
-            .text( d => d);
-
-        }).catch(function (error) {
-            console.log(error);
-        });
+            })
+            .on("mouseout", function (event, d) {
+                console.log(tooltip)
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+            })
 
     </script>
 </body>
