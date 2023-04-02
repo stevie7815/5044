@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
+
+    <title>CS5044: Practical 2 </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+
+</head>
+
+<body>
+    <header>
+        <h1>Which Social Movements & Protests had the largest impact on police shootings?</h1>
+        <hr>
+    </header>
+    <main class="wrapper">
+        <div>
+            <a class="dataset" href="data/dataset.csv" target="_blank">Data Set</a>
+        </div>
+        <br><br>
+
+        <div class="categories_section">
+            <div class="category_cards">
+                <a href="byRace.html">
+                    <b>Police Shootings by Race</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="age.html">
+                    <b>Age Groups</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="year.html">
+                    <b>Police Shootings and Mental Illness (line graph)</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="psmhbar.html">
+                    <b>Police Shootings by Mental Health (bar chart)</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="states.html">
+                    <b>Victims with Signs of Mental Illness by State</b>
+                </a>
+            </div>
+            <div class="category_cards_active">
+                <a href="map.html">
+                    <b>Map</b>
+                </a>
+            </div>
+        </div>
+        <br><br>
+
+        </div>
+        <h1>USA MAP</h1>
+
+        <svg></svg>
+
+    </main>
+    <!--<footer>
+        <p>Created by: sd302 & ifz1</p>
+    </footer>-->
+
+    <script>
+
+        // set margins
+        var margin = {
+            top: 20,
+            right: 30,
+            bottom: 30,
+            left: 20
+        };
+        var width = 960;
+        var height = 500;
+
+        // create svg
+        var svg = d3.select("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // create projections
+        var projection = d3.geoAlbersUsa()
+            .translate([width / 2, height / 2])
+            .scale(1200);
+
+        // create path
+        var path = d3.geoPath()
+            .projection(projection);
+
+        var tooltip = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        // load geojson
+        d3.json("data/us-states.json").then(function (statesdata) {
+
+            // load csv
+            d3.csv("data/dataset2.csv").then(function (shootingsData) {
+
+                var stateVictims = new Map();
+                var stateMHTrue = new Map();
+                
+                shootingsData.forEach(function(d) {
+                    stateVictims.set(d.stateName, +d.stateCount);
+                    stateMHTrue.set(d.stateName, +d.mhState_True);
+
+                })
+
+                // join data
+                svg.selectAll("path")
+                    .data(statesdata.features)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .style("fill", "steelblue")
+                    .style("stroke-width", "1px")
+                    .style("stroke", "white")
+                    // show tooltip
+                    .on("mouseover", function (d) {
+                        var numVictims = stateVictims.get(d.properties.name) || 0;
+                        var mhTrue = stateMHTrue.get(d.properties.name) || 0;
+
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", 0.9);
+                        tooltip.html("<b>" + d.properties.name + "</b>"+ ": " + "<br><br>" + numVictims + " police shootings" + 
+                        "<br><br>" + mhTrue + " with signs of mental health")
+                            .style("left", (d3.event.pageX) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function (d) {
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
+                })
+            });
+
+
+    </script>
+</body>
+
+</html>

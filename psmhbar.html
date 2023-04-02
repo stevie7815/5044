@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    <title>CS5044: Practical 2 </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+
+</head>
+
+<body>
+    <header>
+        <h1>Which Social Movements & Protests had the largest impact on police shootings?</h1>
+        <hr>
+    </header>
+    <main class="wrapper">
+        <div>
+            <a class="dataset" href="data/dataset.csv" target="_blank">Data Set</a>
+        </div>
+        <br><br>
+
+        <div class="categories_section">
+            <div class="category_cards">
+                <a href="byRace.html">
+                    <b>Police Shootings by Race</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="age.html">
+                    <b>Age Groups</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="year.html">
+                    <b>Police Shootings and Mental Illness (line graph)</b>
+                </a>
+            </div>
+            <div class="category_cards_active">
+                <a href="psmhbar.html">
+                    <b>Police Shootings by Mental Health (bar chart)</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="states.html">
+                    <b>Victims with Signs of Mental Illness by State</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="map.html">
+                    <b>Map</b>
+                </a>
+            </div>
+      
+        </div>
+        <br><br>
+
+        </div>
+        <h1>Police Shootings by Mental Health (bar chart)</h1>
+
+        <svg width="960" height="500"></svg>
+
+    </main>
+    <!--<footer>
+        <p>Created by: sd302 & ifz1</p>
+    </footer>-->
+
+    <script>
+
+        var data = [
+            {
+                id: "A",
+                year: "2015",
+                total: 995,
+                with_mh: 260,
+                percentage: "26%"
+            },
+            {
+                id: "B",
+                year: "2016",
+                total: 958,
+                with_mh: 248,
+                percentage: "29%"
+            },
+            {
+                id: "C",
+                year: "2017",
+                total: 983,
+                with_mh: 238,
+                percentage: "24%"
+            },
+            {
+                id: "D",
+                year: "2018",
+                total: 992,
+                with_mh: 220,
+                percentage: "22%"
+            },
+            {
+                id: "E",
+                year: "2019",
+                total: 997,
+                with_mh: 215,
+                percentage: "22%"
+            },
+            {
+                id: "F",
+                year: "2020",
+                total: 1019,
+                with_mh: 219,
+                percentage: "22%"
+            },
+            {
+                id: "G",
+                year: "2021",
+                total: 1048,
+                with_mh: 148,
+                percentage: "14%"
+            },
+            {
+                id: "",
+                year: "2022",
+                total: 1096,
+                with_mh: 138,
+                percentage: "13%"
+            }
+        ];
+
+        var svg = d3.select("svg"),
+            margin = {
+                top: 20,
+                right: 30,
+                bottom: 100,
+                left: 60
+            },
+            width = +svg.attr("width") - margin.left - margin.right,
+            height = +svg.attr("height") - margin.top - margin.bottom,
+            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // x y scale
+        var x = d3.scaleBand()
+            .rangeRound([0, width])
+            .paddingInner(0.2)
+            .domain(data.map(function (d) { return d.year; }));
+
+        var y = d3.scaleLinear()
+            .rangeRound([height, 0])
+            .domain([0, d3.max(data, function (d) { return d.with_mh + d.total; })]);
+
+        // add bars
+        g.selectAll(".bar.total")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar total")
+            .attr("x", function (d) { return x(d.year); })
+            .attr("y", function (d) { return y(d.total); })
+            .attr("width", x.bandwidth())
+            .attr("height", function (d) { return height - y(d.total); })
+            .style("fill", "#FF5733")
+            .attr("opacity", 0.8);
+
+        // add bars
+        g.selectAll(".bar.with-mh")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar with-mh")
+            .attr("x", function (d) { return x(d.year); })
+            .attr("y", function (d) { return y(d.with_mh); })
+            .attr("width", x.bandwidth())
+            .attr("height", function (d) { return height - y(d.with_mh); })
+            .style("fill", "#4285f4")
+            .attr("opacity", 0.8);
+
+
+        // labels
+        g.selectAll(".label")
+            .data(data)
+            .enter().append("text")
+            .attr("class", "label")
+            .attr("id", function (d) { return d.id + "-label"; })
+            .attr("x", function (d) { return x(d.year) + x.bandwidth() / 2; })
+            .attr("y", function (d) { return y(d.total) - 5; })
+            .attr("text-anchor", "middle")
+            .style("display", "none")
+            .text(function (d) { return d.total; });
+
+        g.selectAll(".percentage")
+            .data(data)
+            .enter().append("text")
+            .attr("class", "percentage")
+            .attr("id", function (d) { return d.id + "-percentage"; })
+            .attr("x", function (d) { return x(d.year) + x.bandwidth() / 2; })
+            .attr("y", function (d) { return y(d.with_mh) - 5; })
+            .attr("text-anchor", "middle")
+            .style("display", "none")
+            .text(function (d) { return d.percentage; });
+
+
+        // add interactivity
+        g.selectAll(".bar")
+            .on("mouseover", function (d) {
+                d3.select("#" + d.id + "-label").style("display", "block");
+                d3.select("#" + d.id + "-percentage").style("display", "block");
+            })
+            .on("mouseout", function (d) {
+                d3.select("#" + d.id + "-label").style("display", "none");
+                d3.select("#" + d.id + "-percentage").style("display", "none");
+            })
+
+        // add axes
+        g.append("g")
+            .attr("class", "axis axis-x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        g.append("g")
+            .attr("class", "axis axis-y")
+            .call(d3.axisLeft(y).ticks(5));
+
+        // add legend
+        var legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", "translate(" + (width - 120) + ", 20)");
+
+        legend.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 12)
+            .attr("height", 12)
+            .attr("fill", "#FF5733")
+            .attr("opacity", 0.8);
+
+        legend.append("text")
+            .attr("x", 20)
+            .attr("y", 10)
+            .attr("dy", "0.32em")
+            .text("Total");
+
+        legend.append("rect")
+            .attr("x", 0)
+            .attr("y", 20)
+            .attr("width", 12)
+            .attr("height", 12)
+            .attr("fill", "#4285f4")
+            .attr("opacity", 0.8);
+
+        legend.append("text")
+            .attr("x", 20)
+            .attr("y", 30)
+            .attr("dy", "0.32em")
+            .text("Mental Illness");
+
+        // add axis label
+        g.append("text")
+            .attr("class", "axis-label")
+            .attr("x", width / 2 + margin.left)
+            .attr("y", height + margin.top + margin.bottom - 60)
+            .attr("text-anchor", "middle")
+            .text("Year");
+
+        g.append("text")
+            .attr("class", "axis-label")
+            .attr("x", -height / 2 - margin.top)
+            .attr("y", margin.left - 100)
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .text("Number of Cases");
+
+        // add interactivity
+
+    </script>
+</body>
+
+</html>

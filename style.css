@@ -180,10 +180,9 @@ div.tooltip {
 .category_cards {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: 0.5s;
-    width: 20%;
+    width: 15%;
     /* allows 5 cards to fit in a line when margin is considered (w/o margin, 6) */
     border-radius: 5px;
-    margin: 0 2%;
     padding: 8px;
     background-color: whitesmoke;
     border-top: none;
@@ -196,10 +195,9 @@ div.tooltip {
 
 .category_cards_active, .category_cards:hover {
     transition: 0.5s;
-    width: 20%;
+    width: 15%;
     /* allows 5 cards to fit in a line when margin is considered (w/o margin, 6) */
     border-radius: 5px;
-    margin: 0 2%;
     padding: 8px;
     background-color: whitesmoke;
     border-top: none;

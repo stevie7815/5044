@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
+
+    <title>CS5044: Practical 2 </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.min.js"></script>
+
+</head>
+
+<body>
+    <header>
+        <h1>Which Social Movements & Protests had the largest impact on police shootings?</h1>
+        <hr>
+    </header>
+    <main class="wrapper">
+        <div>
+            <a class="dataset" href="data/dataset.csv" target="_blank">Data Set</a>
+        </div>
+        <br><br>
+
+        <div class="categories_section">
+            <div class="category_cards">
+                <a href="byRace.html">
+                    <b>Police Shootings by Race</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="age.html">
+                    <b>Age Groups</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="year.html">
+                    <b>Police Shootings and Mental Illness (line graph)</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="psmhbar.html">
+                    <b>Police Shootings by Mental Health (bar chart)</b>
+                </a>
+            </div>
+            <div class="category_cards_active">
+                <a href="states.html">
+                    <b>Victims with Signs of Mental Illness by State</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="map.html">
+                    <b>Map</b>
+                </a>
+            </div>
+    
+        </div>
+        <br><br>
+
+        </div>
+        <h1>Police Shootings by Mental Health (bar chart)</h1>
+
+        <svg width="1200" height="600"></svg>
+
+    </main>
+    <!--<footer>
+        <p>Created by: sd302 & ifz1</p>
+    </footer>-->
+
+    <script>
+
+        var data = [
+            {
+                states: "AK",
+                total: 54,
+                with_mh: 7,
+                percentage: "13%"
+            },
+            {
+                states: "AL",
+                total: 157,
+                with_mh: 32,
+                percentage: "20%"
+            },
+            {
+                states: "AR",
+                total: 115,
+                with_mh: 17,
+                percentage: "15%"
+            },
+            {
+                states: "AZ",
+                total: 377,
+                with_mh: 63,
+                percentage: "17%"
+            },
+            {
+                states: "CA",
+                total: 1186,
+                with_mh: 238,
+                percentage: "20%"
+            },
+            {
+                states: "CO",
+                total: 301,
+                with_mh: 36,
+                percentage: "12%"
+            },
+            {
+                states: "CT",
+                total: 23,
+                with_mh: 6,
+                percentage: "26%"
+            },
+            {
+                states: "DC",
+                total: 25,
+                with_mh: 3,
+                percentage: "12%"
+            },
+            {
+                states: "DE",
+                total: 19,
+                with_mh: 4,
+                percentage: "21%"
+            },
+            {
+                states: "FL",
+                total: 528,
+                with_mh: 137,
+                percentage: "26%"
+            },
+            {
+                states: "GA",
+                total: 316,
+                with_mh: 56,
+                percentage: "18%"
+            },
+            {
+                states: "HI",
+                total: 40,
+                with_mh: 7,
+                percentage: "18%"
+            },
+            {
+                states: "IA",
+                total: 50,
+                with_mh: 9,
+                percentage: "18%"
+            },
+            {
+                states: "ID",
+                total: 67,
+                with_mh: 9,
+                percentage: "13%"
+            },
+            {
+                states: "IL",
+                total: 167,
+                with_mh: 28,
+                percentage: "17%"
+            },
+            {
+                states: "IN",
+                total: 155,
+                with_mh: 38,
+                percentage: "25%"
+            },
+            {
+                states: "KS",
+                total: 81,
+                with_mh: 17,
+                percentage: "21%"
+            },
+            {
+                states: "KY",
+                total: 147,
+                with_mh: 15,
+                percentage: "10%"
+            },
+            {
+                states: "LA",
+                total: 163,
+                with_mh: 35,
+                percentage: "21%"
+            },
+            {
+                states: "MA",
+                total: 57,
+                with_mh: 18,
+                percentage: "49%"
+            },
+            {
+                states: "MD",
+                total: 112,
+                with_mh: 30,
+                percentage: "27%"
+            },
+            {
+                states: "ME",
+                total: 34,
+                with_mh: 5,
+                percentage: "15%"
+            },
+            {
+                states: "MI",
+                total: 140,
+                with_mh: 36,
+                percentage: "26%"
+            },
+            {
+                states: "MN",
+                total: 91,
+                with_mh: 26,
+                percentage: "29%"
+            },
+            {
+                states: "MO",
+                total: 216,
+                with_mh: 34,
+                percentage: "16%"
+            },
+            {
+                states: "MS",
+                total: 107,
+                with_mh: 16,
+                percentage: "15%"
+            },
+            {
+                states: "MT",
+                total: 51,
+                with_mh: 5,
+                percentage: "10%"
+            },
+            {
+                states: "NC",
+                total: 234,
+                with_mh: 53,
+                percentage: "23%"
+            },
+            {
+                states: "ND",
+                total: 18,
+                with_mh: 4,
+                percentage: "22%"
+            },
+            {
+                states: "NE",
+                total: 41,
+                with_mh: 9,
+                percentage: "22%"
+            },
+            {
+                states: "NH",
+                total: 23,
+                with_mh: 10,
+                percentage: "43%"
+            },
+            {
+                states: "NJ",
+                total: 95,
+                with_mh: 20,
+                percentage: "21%"
+            },
+            {
+                states: "NM",
+                total: 175,
+                with_mh: 28,
+                percentage: "16%"
+            },
+            {
+                states: "NV",
+                total: 137,
+                with_mh: 33,
+                percentage: "24%"
+            },
+            {
+                states: "NY",
+                total: 150,
+                with_mh: 50,
+                percentage: "33%"
+            },
+            {
+                states: "OH",
+                total: 238,
+                with_mh: 57,
+                percentage: "24%"
+            },
+            {
+                states: "OK",
+                total: 229,
+                with_mh: 45,
+                percentage: "20%"
+            },
+            {
+                states: "OR",
+                total: 135,
+                with_mh: 38,
+                percentage: "28%"
+            },
+            {
+                states: "PA",
+                total: 170,
+                with_mh: 45,
+                percentage: "26%"
+            },
+            {
+                states: "RI",
+                total: 6,
+                with_mh: 1,
+                percentage: "17%"
+            },
+            {
+                states: "SC",
+                total: 131,
+                with_mh: 26,
+                percentage: "20%"
+            },
+            {
+                states: "SD",
+                total: 29,
+                with_mh: 7,
+                percentage: "24%"
+            },
+            {
+                states: "TN",
+                total: 228,
+                with_mh: 49,
+                percentage: "21%"
+            },
+            {
+                states: "TX",
+                total: 758,
+                with_mh: 137,
+                percentage: "18%"
+            },
+            {
+                states: "UT",
+                total: 98,
+                with_mh: 23,
+                percentage: "24%"
+            },
+            {
+                states: "VA",
+                total: 151,
+                with_mh: 36,
+                percentage: "24%"
+            },
+            {
+                states: "VT",
+                total: 13,
+                with_mh: 6,
+                percentage: "46%"
+            },
+            {
+                states: "WA",
+                total: 226,
+                with_mh: 66,
+                percentage: "29%"
+            },
+            {
+                states: "WI",
+                total: 127,
+                with_mh: 31,
+                percentage: "24%"
+            },
+            {
+                states: "WV",
+                total: 79,
+                with_mh: 15,
+                percentage: "19%"
+            },
+            {
+                states: "WY",
+                total: 28,
+                with_mh: 6,
+                percentage: "21%"
+            }
+
+        ];
+
+        var svg = d3.select("svg"),
+            margin = {
+                top: 20,
+                right: 30,
+                bottom: 100,
+                left: 60
+            },
+            width = +svg.attr("width") - margin.left - margin.right,
+            height = +svg.attr("height") - margin.top - margin.bottom,
+            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // x y scale
+        var x = d3.scaleBand()
+            .rangeRound([0, width])
+            .paddingInner(0.2)
+            .domain(data.map(function (d) { return d.states; }));
+
+        var y = d3.scaleLinear()
+            .rangeRound([height, 0])
+            .domain([0, d3.max(data, function (d) { return d.with_mh + d.total; })]);
+
+        // add bars
+        g.selectAll(".bar.total")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar total")
+            .attr("x", function (d) { return x(d.states); })
+            .attr("y", function (d) { return y(d.total); })
+            .attr("width", x.bandwidth())
+            .attr("height", function (d) { return height - y(d.total); })
+            .style("fill", "#FF5733")
+            .attr("opacity", 0.8);
+
+        // add bars
+        g.selectAll(".bar.with-mh")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar with-mh")
+            .attr("x", function (d) { return x(d.states); })
+            .attr("y", function (d) { return y(d.with_mh); })
+            .attr("width", x.bandwidth())
+            .attr("height", function (d) { return height - y(d.with_mh); })
+            .style("fill", "#4285f4")
+            .attr("opacity", 0.8);
+
+
+        // labels
+        g.selectAll(".label")
+            .data(data)
+            .enter().append("text")
+            .attr("class", "label")
+            .attr("id", function (d) { return d.states + "-label"; })
+            .attr("x", function (d) { return x(d.states) + x.bandwidth() / 2; })
+            .attr("y", function (d) { return y(d.total) - 5; })
+            .attr("text-anchor", "middle")
+            .style("display", "none")
+            .text(function (d) { return d.total; });
+
+        g.selectAll(".percentage")
+            .data(data)
+            .enter().append("text")
+            .attr("class", "percentage")
+            .attr("id", function (d) { return d.states + "-percentage"; })
+            .attr("x", function (d) { return x(d.states) + x.bandwidth() / 2; })
+            .attr("y", function (d) { return y(d.with_mh) - 5; })
+            .attr("text-anchor", "middle")
+            .style("display", "none")
+            .text(function (d) { return d.percentage; });
+
+
+        // add interactivity
+        g.selectAll(".bar")
+            .on("mouseover", function (d) {
+                d3.select("#" + d.states + "-label").style("display", "block");
+                d3.select("#" + d.states + "-percentage").style("display", "block");
+            })
+            .on("mouseout", function (d) {
+                d3.select("#" + d.states + "-label").style("display", "none");
+                d3.select("#" + d.states + "-percentage").style("display", "none");
+            })
+
+        // add axes
+        g.append("g")
+            .attr("class", "axis axis-x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .attr("transform", "rotate(45)")
+            .attr("dx", "10px")
+            .attr("dy", "10px")
+            .style("text-anchor", "start")
+
+        g.append("g")
+            .attr("class", "axis axis-y")
+            .call(d3.axisLeft(y).ticks(5));
+
+        // add legend
+        var legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", "translate(" + (width - 120) + ", 20)");
+
+        legend.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 12)
+            .attr("height", 12)
+            .attr("fill", "#FF5733")
+            .attr("opacity", 0.8);
+
+        legend.append("text")
+            .attr("x", 20)
+            .attr("y", 10)
+            .attr("dy", "0.32em")
+            .text("Total");
+
+        legend.append("rect")
+            .attr("x", 0)
+            .attr("y", 20)
+            .attr("width", 12)
+            .attr("height", 12)
+            .attr("fill", "#4285f4")
+            .attr("opacity", 0.8);
+
+        legend.append("text")
+            .attr("x", 20)
+            .attr("y", 30)
+            .attr("dy", "0.32em")
+            .text("Mental Illness");
+
+        // add axis label
+        g.append("text")
+            .attr("class", "axis-label")
+            .attr("x", width / 2 + margin.left)
+            .attr("y", height + margin.top + margin.bottom - 60)
+            .attr("text-anchor", "middle")
+            .text("states");
+
+        g.append("text")
+            .attr("class", "axis-label")
+            .attr("x", -height / 2 - margin.top)
+            .attr("y", margin.left - 100)
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .text("Number of Cases");
+
+
+    </script>
+</body>
+
+</html>

@@ -34,211 +34,159 @@
             </div>
             <div class="category_cards_active">
                 <a href="age.html">
-                    <b>Age Groups</b>
+                    <b>Age Groups and </b>
                 </a>
             </div>
             <div class="category_cards">
                 <a href="year.html">
-                    <b>Police Shootings and Year by Mental Health</b>
+                    <b>Police Shootings and Mental Illness (line graph)</b>
+                </a>
+            </div>
+            <div class="category_cards_active">
+                <a href="psmhbar.html">
+                    <b>Police Shootings by Mental Health (bar chart)</b>
                 </a>
             </div>
             <div class="category_cards">
-                <a href="ageLinegraph.html">
-                    <b>Police Shootings and Age by Mental Health</b>
+                <a href="states.html">
+                    <b>Victims with Signs of Mental Illness by State</b>
+                </a>
+            </div>
+            <div class="category_cards">
+                <a href="map.html">
+                    <b>Map</b>
                 </a>
             </div>
         </div>
         <br><br>
 
         </div>
-        <h1>Age</h1>
+        <h1>Age Groups</h1>
 
         <div id="chart"></div>
     </main>
-    <footer>
+    <!--<footer>
         <p>Created by: sd302 & ifz1</p>
-    </footer> 
-
-</body>
-</html>
+    </footer>-->
 
     <script>
 
+        const svgWidth = 600;
+        const svgHeight = 500;
+        const margin = {
+            top: 20,
+            right: 20,
+            bottom: 50,
+            left: 40
+        };
+        const chartWidth = svgWidth - margin.left - margin.right;
+        const chartHeight = svgHeight - margin.top - margin.bottom;
+
+        // create svg
+        var svg = d3.select("#chart")
+            .append("svg")
+            .attr("width", svgWidth)
+            .attr("height", svgHeight);
+
+        // create chart
+        const chart = svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+
         d3.csv("data/dataset2.csv").then(function (data) {
-            // create svg
-            var svg = d3.select("#chart")
-                .append("g")
-                .attr("width", 600)
-                .attr("height", 400);
 
-            // create scale
-            var xScale = d3.scaleBand()
-                .domain(data.map(function (d) { return d.ageGroup; }))
-                .range([50, 550])
-                .padding(0.4);
+            const totalCount = d3.sum(data, d => d.ageCount);
 
-            var yScale = d3.scaleLinear()
-                .domain([0, d3.max(data, function (d) { return d.ageCount; })])
-                .range([350, 50])
+            //scales
+            const xScale = d3.scaleBand()
+                .domain(data.map(d => d.ageGroup))
+                .range([0, chartWidth])
+                .paddingInner(0.1)
+                .paddingOuter(0.1);
 
+            const yScale = d3.scaleLinear()
+                // .domain([0, d3.max(data, d => d.ageCount)])
+                .domain([0, 2310])
+                .range([chartHeight, 0]);
 
-            // x axis label
-            var xAxis = d3.axisBottom(xScale);
-
-            svg.append("g")
-                .attr("transform", "translate(0, 350)")
+            // axis
+            const xAxis = d3.axisBottom(xScale);
+            chart.append('g')
+                .attr('transform', `translate(0, ${chartHeight})`)
                 .call(xAxis)
-                .selectAll("text")
-                .attr("transform", "rotate(-45)")
-                .attr("text-anchor", "end")
-                .attr("dx", "-.8em")
-                .attr("dy", ".15em");
+                .selectAll('text')
+                .attr('transform', 'rotate(-45)')
+                .attr('text-anchor', 'end')
+                .attr('dx', '-0.8em')
+                .attr('dy', '0.15em');
 
-            // y axis label
-            var yAxis = d3.axisLeft(yScale);
+            const yAxis = d3.axisLeft(yScale);
+            chart.append('g')
+                .call(yAxis);
 
-            svg.append("g")
-                .attr("transform", "translate(50, 0)")
-                .call(yAxis)
-
-            var bars = svg.append("g")
-                .selectAll("rect")
+            // bars
+            const bars = chart.selectAll('.bar')
                 .data(data)
-                .enter()
-                .append("rect");
+                .enter().append('rect')
+                .attr('class', 'bar')
+                .attr('x', d => xScale(d.ageGroup))
+                .attr('y', d => yScale(d.ageCount))
+                .attr('width', xScale.bandwidth())
+                .attr('height', d => chartHeight - yScale(d.ageCount))
+                //.attr('fill', 'steelblue');
+                .on("mouseenter", function (d) {
+                    d3.select(this).transition()
+                        .duration(200)
+                        .attr("width", xScale.bandwidth() * 1.2)
+                        .attr("x", function (d) {
+                            return xScale(d.ageGroup) - (xScale.bandwidth() * 0.1)
+                        })
+                        .attr("y", function (d) {
+                            return yScale(d.ageCount) - 10;
+                        })
+                        .style("fill", "orange")
+                        .attr("height", function (d) {
+                            return chartHeight - yScale(d.ageCount) + 10;
+                        });
+                })
+                .on("mouseleave", function () {
+                    d3.select(this).transition()
+                        .duration(200)
+                        .style("fill", "steelblue")
+                        .attr("width", xScale.bandwidth())
+                        .attr("x", function (d) {
+                            return xScale(d.ageGroup);
+                        })
+                        .attr("y", function (d) {
+                            return yScale(d.ageCount);
+                        })
+                        .attr("height", function (d) {
+                            return chartHeight - yScale(d.ageCount);
+                        });
+                });
+               
 
-            // create bars
-            bars.attr("x", function(d) { return xScale(d.ageGroup); })
-                .attr("y", function(d) { return yScale(+d.ageCount); })
-                .attr("width", xScale.bandwidth())
-                .attr("height", function(d) { return 350 - yScale(+d.ageCount); })
-                .attr("fill", "steelblue");
 
-            // add labels
-            bars.append("text")
-                .attr("class", "label")
-                .attr("x", function(d) { return xScale(d.ageGroup) + xScale.bandwidth()/2;})
-                .attr("y", function(d) { return yScale(+d.ageCount) + 20; })
-                .text(function(d) { return d.ageCount; })
-                .attr("text-anchor", "middle")
-                .attr("fill", "white");
+            //labels
+            chart.append('text')
+            .attr('class', 'axis-label')
+            .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + margin.top + 20})`)
+            .style('text-anchor', 'middle')
+            .text("Age Group");
 
-
+            chart.append('text')
+            .attr('class', 'axis-label')
+            .attr("transform", "rotate(-90)")
+            .attr('y', 0 - margin.left)
+            .attr('x', 0 - (chartHeight / 2))
+            .attr("dy", "1em")
+            .style('text-anchor', 'middle')
+            .text("Count");                
 
         }).catch(function (error) {
             console.log(error);
         });
-/*        
-                                // set dimensions and margins
-                                        var margin = {
-                                            top: 20,
-                                            right: 20,
-                                            bottom: 30,
-                                            left: 40
-                                        };
-                                        var width = 600 - margin.left - margin.right;
-                                        var height = 400 - margin.top - margin.bottom;
-                                
-                                        // create svg for race chart
-                                        var svgRace = d3.select("#chart")
-                                            .attr("width", width + margin.left + margin.right)
-                                            .attr("height", height + margin.left + margin.right)
-                                            .append("g")
-                                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                                
-                                        var tooltip = d3.select("body").append("div")
-                                            .attr("class", "tooltip")
-                                            .style("opacity", 0);
-                                
-                                        d3.csv("data/dataset2.csv").then(function (data) {
-                                
-                                
-                                            // process data
-                                            const rolledData = d3.rollup(data, (v) => d3.sum(v, (d) => d.ageGroup));
-                                            const ageData = Array.from(rolledData, d => ({ ageGroup: d[0], count: d[1] }));
-                                            ageData.sort((a, b) => d3.descending(a.count, b.count));
-                                
-                                
-                                            // x y scales
-                                            const x = d3.scaleBand()
-                                                .domain(d3.map(d => d.ageGroup))
-                                                .range([0, width])
-                                                .padding(0.1);
-                                
-                                            const y = d3.scaleLinear()
-                                                .domain([0, d3.max(ageData, d => d.count)])
-                                                .range([height, 0])
-                                
-                                
-                                            // create x axis
-                                            const xAxis = d3.axisBottom(x);
-                                
-                                            svgRace.append("g")
-                                                .attr("transform", "translate(0," + height + ")")
-                                                .call(xAxis);
-                                
-                                            /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html *
-                                            svgRace.append("text")  // x axis label
-                                                .attr("x", width / 2)
-                                                .attr("y", height + margin.bottom - -10)
-                                                .style("text-anchor", "middle")
-                                                .text("Race");
-                                            /* end of adapted code *
-                                
-                                            // create y axis
-                                            const yAxis = d3.axisLeft(y);
-                                
-                                            svgRace.append("g")
-                                                .call(yAxis);
-                                
-                                            /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html *
-                                            svgRace.append("text")  // x axis label
-                                                .attr("x", -height / 2)
-                                                .attr("y", -margin.left + 10)
-                                                .attr("transform", "rotate(-90)")
-                                                .style("text-anchor", "middle")
-                                                .text("Number of Shootings");
-                                            /* end of adapted code *
-                                
-                                            // add colour
-                                            const colour = d3.scaleOrdinal()
-                                                .domain(ageData.map(d => d.race))
-                                                .range(d3.schemeSet2);
-                                
-                                
-                                
-                                            // create bars
-                                            svgRace.selectAll(".bar")
-                                                .data(raceData)
-                                                .enter().append("rect")
-                                                .attr("x", d => x(d.race))
-                                                .attr("y", d => y(d.count)) // position bar from bottom
-                                                .attr("width", x.bandwidth())
-                                                .attr("height", d => height - y(d.count)) // height relative to the bottom
-                                                .attr("fill", d => colour(d.race)) // add colour to bars
-                                                .on("mouseover", function (event, d) {
-                                                    var percentage = d.count / d3.sum(data, function (d) { return d.count; }) * 100;
-                                
-                                                    // push into percentage div
-                                                    percentageDiv.html("Percentage: " + percentage.toFixed(1) + "%");
-                                
-                                                })
-                                                .on("mouseout", function (event, d) {
-                                                    console.log(tooltip)
-                                                    tooltip.transition()
-                                                        .duration(500)
-                                                        .style("opacity", 0);
-                                                })
-                                
-                                
-                                
-                                        }).catch(function (error) {
-                                            console.log(error);
-                                        });
-                                
-                                
-                                */
-
+           
     </script>
 </body>
 
