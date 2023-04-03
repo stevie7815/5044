@@ -83,11 +83,11 @@
         // set margins
         var margin = {
             top: 20,
-            right: 30,
+            right: 200,
             bottom: 30,
-            left: 20
+            left: 200
         };
-        var width = 960;
+        var width = 1000;
         var height = 500;
 
         // create svg
@@ -139,7 +139,7 @@
                         var stateRangeValue = stateRange.get(d.properties.name);
                         if (stateRangeValue === "A") {
                             if (stateVictims.get(d.properties.name) > 0) {
-                                return "#AEF7FF";
+                                return "#CAF9FD";
                             }
                         }
                         else if (stateRangeValue === "B") {
@@ -225,7 +225,245 @@
                             .duration(500)
                             .style("opacity", 0);
                     });
+
+                // add key
+                var legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", "translate(" + (width - 100) + ", 20)");
+
+                legend.append("text")
+                    .attr("x", 0)
+                    .attr("y", -10)
+                    .attr("dy", "0.32em")
+                    .text("Total Victims");
+
+                // if A
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .attr("fill", "#CAF9FD")
+                    .style("stroke", "black")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 10)
+                    .attr("dy", "0.32em")
+                    .text("0-19");
+
+                // if B
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 20)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .attr("fill", "#A1EFFA")
+                    .style("stroke", "black")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 30)
+                    .attr("dy", "0.32em")
+                    .text("20-39");
+
+                // if C
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 40)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#94E7F5")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 50)
+                    .attr("dy", "0.32em")
+                    .text("40-59");
+
+                // if D
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 60)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#87DFF0")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 70)
+                    .attr("dy", "0.32em")
+                    .text("60-79");
+
+                // if E
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 80)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#7AD8EB")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 90)
+                    .attr("dy", "0.32em")
+                    .text("80-99");
+
+                // if F
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 100)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#6DD0E6")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 110)
+                    .attr("dy", "0.32em")
+                    .text("100-119");
+
+                // if G
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 120)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#60C8E1")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 130)
+                    .attr("dy", "0.32em")
+                    .text("120-139");
+
+                // if H
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 140)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#54C0DD")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 150)
+                    .attr("dy", "0.32em")
+                    .text("140-159");
+
+                // if I
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 160)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#47B8D8")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 170)
+                    .attr("dy", "0.32em")
+                    .text("160-179");
+
+                // if J
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 180)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#3AB0D3")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 190)
+                    .attr("dy", "0.32em")
+                    .text("180-239");
+
+                // if K
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 200)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#2DA9CE")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 210)
+                    .attr("dy", "0.32em")
+                    .text("300-400");
+
+
+                // if L
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 220)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#20A1C9")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 230)
+                    .attr("dy", "0.32em")
+                    .text("500-600");
+
+                // if M
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 240)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#1399C4")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 250)
+                    .attr("dy", "0.32em")
+                    .text("700-800");
+
+                // if N
+                legend.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 260)
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .style("stroke", "black")
+                    .attr("fill", "#0691BF")
+                    .attr("opacity", 0.8);
+
+                legend.append("text")
+                    .attr("x", 20)
+                    .attr("y", 270)
+                    .attr("dy", "0.32em")
+                    .text("800+");
             });
+
+
         })
 
 
