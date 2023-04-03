@@ -25,7 +25,7 @@
         <div class="center">
             <p>The dataset used is based on a database of police shootings from The Washington Post. It includes data on
                 fatal shootings by police in the United States from 2015 to now.</p>
-            <br><a class="dataset" href="data/dataset.csv" target="_blank">Data Set</a>
+            <br><a class="dataset" href="dataset.csv" target="_blank">Data Set</a>
         </div>
         <br>
         </div>
@@ -50,11 +50,6 @@
                 </a>
             </div>
             <div class="category_cards">
-                <a href="psmhbar.html">
-                    <b>Police Shootings by Mental Health (bar chart)</b>
-                </a>
-            </div>
-            <div class="category_cards">
                 <a href="ageLinegraph.html">
                     <b>Police Shootings by Mental Illness and Age</b>
                 </a>
@@ -64,7 +59,7 @@
                     <b>Police Shootings by Mental Illness and US State</b>
                 </a>
             </div>
-            
+
             <div class="category_cards_active">
                 <a href="map.html">
                     <b>Map</b>
@@ -80,7 +75,7 @@
 
     </main>
     <footer>
-        <p>Created by: 220019198 & 180016488</p>
+        <p>Created by: sd302 & ifz1</p>
     </footer>
 
     <script>
@@ -114,6 +109,7 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
+
         // load geojson
         d3.json("data/us-states.json").then(function (statesdata) {
 
@@ -122,11 +118,12 @@
 
                 var stateVictims = new Map();
                 var stateMHTrue = new Map();
-                
-                shootingsData.forEach(function(d) {
+                var stateRange = new Map();
+
+                shootingsData.forEach(function (d) {
                     stateVictims.set(d.stateName, +d.stateCount);
                     stateMHTrue.set(d.stateName, +d.mhState_True);
-
+                    stateRange.set(d.stateName, d.stateCount_Range);
                 })
 
                 // join data
@@ -137,6 +134,79 @@
                     .style("fill", "steelblue")
                     .style("stroke-width", "1px")
                     .style("stroke", "white")
+                    .style("fill", "steelblue")
+                    .style("fill", function (d) {
+                        var stateRangeValue = stateRange.get(d.properties.name);
+                        if (stateRangeValue === "A") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#AEF7FF";
+                            }
+                        }
+                        else if (stateRangeValue === "B") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#A1EFFA";
+                            }
+                        } else if (stateRangeValue === "C") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#94E7F5";
+                            }
+                        } else if (stateRangeValue === "D") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#87DFF0";
+                            }
+                        }
+                        else if (stateRangeValue === "E") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#7AD8EB";
+                            }
+                        }
+                        else if (stateRangeValue === "F") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#6DD0E6";
+                            }
+                        }
+                        else if (stateRangeValue === "G") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#60C8E1";
+                            }
+                        }
+                        else if (stateRangeValue === "H") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#54C0DD";
+                            }
+                        }
+                        else if (stateRangeValue === "I") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#47B8D8";
+                            }
+                        }
+                        else if (stateRangeValue === "J") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#3AB0D3";
+                            }
+                        }
+                        else if (stateRangeValue === "K") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#2DA9CE";
+                            }
+                        }
+                        else if (stateRangeValue === "L") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#20A1C9";
+                            }
+                        }
+                        else if (stateRangeValue === "M") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#1399C4";
+                            }
+                        }
+                        else if (stateRangeValue === "N") {
+                            if (stateVictims.get(d.properties.name) > 0) {
+                                return "#0691BF";
+                            }
+                        }
+                        return "red;"
+                    })
                     // show tooltip
                     .on("mouseover", function (d) {
                         var numVictims = stateVictims.get(d.properties.name) || 0;
@@ -145,8 +215,8 @@
                         tooltip.transition()
                             .duration(200)
                             .style("opacity", 0.9);
-                        tooltip.html("<b>" + d.properties.name + "</b>"+ ": " + "<br><br>" + numVictims + " police shootings" + 
-                        "<br><br>" + mhTrue + " with signs of mental health")
+                        tooltip.html("<b>" + d.properties.name + "</b>" + ": " + "<br><br>" + numVictims + " police shootings" +
+                            "<br><br>" + mhTrue + " with signs of mental health")
                             .style("left", (d3.event.pageX) + "px")
                             .style("top", (d3.event.pageY - 28) + "px");
                     })
@@ -155,8 +225,8 @@
                             .duration(500)
                             .style("opacity", 0);
                     });
-                })
             });
+        })
 
 
     </script>

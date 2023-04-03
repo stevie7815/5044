@@ -48,11 +48,6 @@
                     <b>Police Shootings by Mental Illness and Year</b>
                 </a>
             </div>
-            <div class="category_cards_active">
-                <a href="psmhbar.html">
-                    <b>Police Shootings by Mental Health (bar chart)</b>
-                </a>
-            </div>
             <div class="category_cards">
                 <a href="ageLinegraph.html">
                     <b>Police Shootings by Mental Illness and Age</b>
@@ -63,20 +58,21 @@
                     <b>Police Shootings by Mental Illness and US State</b>
                 </a>
             </div>
-            
+
             <div class="category_cards">
                 <a href="map.html">
                     <b>Map</b>
                 </a>
             </div>
-      
+
         </div>
         <br><br>
 
         </div>
         <h1>Police Shootings by Mental Health (bar chart)</h1>
-
-        <svg width="1100" height="550"></svg>
+        <button onclick="window.location.href='year.html';">See as line graph </button>
+<br>
+        <svg width="1100" height="550" ></svg>
 
     </main>
     <footer>
@@ -284,7 +280,6 @@
             .attr("transform", "rotate(-90)")
             .text("Number of Police Shootings");
 
-        // add interactivity
 
     </script>
 </body>
