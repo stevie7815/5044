@@ -35,7 +35,7 @@
         <br><br>
 
         <div class="categories_section">
-            <div class="category_cards_active">
+            <div class="category_cards">
                 <a href="byRace.html">
                     <b>Police Shootings by Race</b>
                 </a>
@@ -45,7 +45,6 @@
                     <b>Police Shootings and Year by Health</b>
                 </a>
             </div>
-            <div class="category_cards">
             <div class="category_cards">
                 <a href="psmhbar.html">
                     <b>Police Shootings by Mental Health (bar chart)</b>
@@ -141,161 +140,152 @@
     //////* SD302: POLICE SHOOTINGS BY RACE *///////
 
     var svg = d3.select("svg"),
-            margin = {
-                top: 20,
-                right: 30,
-                bottom: 100,
-                left: 60
-            },
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        margin = {
+            top: 20,
+            right: 30,
+            bottom: 100,
+            left: 70
+        },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        // x y scale
-        var x = d3.scaleBand()
-            .rangeRound([0, width])
-            .paddingInner(0.2)
-            .domain(data.map(function (d) { return d.race; }));
+    // x y scale
+    var x = d3.scaleBand()
+        .rangeRound([0, width])
+        .paddingInner(0.2)
+        .domain(data.map(function (d) { return d.race; }));
 
-        var y = d3.scaleLinear()
-            .rangeRound([height, 0])
-            .domain([0, d3.max(data, function (d) { return d.with_mh + d.total; })]);
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0])
+        .domain([0, d3.max(data, function (d) { return d.with_mh + d.total; })]);
 
-        // add bars
-        g.selectAll(".bar.total")
-            .data(data)
-            .enter().append("rect")
-            .attr("class", "bar total")
-            .attr("x", function (d) { return x(d.race); })
-            .attr("y", function (d) { return y(d.total); })
-            .attr("width", x.bandwidth())
-            .attr("height", function (d) { return height - y(d.total); })
-            .style("fill", "#FF5733")
-            .attr("opacity", 0.8);
+    // add bars
+    g.selectAll(".bar.total")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar total")
+        .attr("x", function (d) { return x(d.race); })
+        .attr("y", function (d) { return y(d.total); })
+        .attr("width", x.bandwidth())
+        .attr("height", function (d) { return height - y(d.total); })
+        .style("fill", "#FF5733")
+        .attr("opacity", 0.8);
 
-        // add bars
-        g.selectAll(".bar.with-mh")
-            .data(data)
-            .enter().append("rect")
-            .attr("class", "bar with-mh")
-            .attr("x", function (d) { return x(d.race); })
-            .attr("y", function (d) { return y(d.with_mh); })
-            .attr("width", x.bandwidth())
-            .attr("height", function (d) { return height - y(d.with_mh); })
-            .style("fill", "#4285f4")
-            .attr("opacity", 0.8);
-
-
-        // labels
-        g.selectAll(".label")
-            .data(data)
-            .enter().append("text")
-            .attr("class", "label")
-            .attr("id", function (d) { return d.race + "-label"; })
-            .attr("x", function (d) { return x(d.race) + x.bandwidth() / 2; })
-            .attr("y", function (d) { return y(d.total) - 5; })
-            .attr("text-anchor", "middle")
-            .style("display", "none")
-            .text(function (d) { return d.total; });
-
-        g.selectAll(".percentage")
-            .data(data)
-            .enter().append("text")
-            .attr("class", "percentage")
-            .attr("id", function (d) { return d.race + "-percentage"; })
-            .attr("x", function (d) { return x(d.race) + x.bandwidth() / 2; })
-            .attr("y", function (d) { return y(d.with_mh) - 5; })
-            .attr("text-anchor", "middle")
-            .style("display", "none")
-            .text(function (d) { return d.percentage; });
+    // add bars
+    g.selectAll(".bar.with-mh")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar with-mh")
+        .attr("x", function (d) { return x(d.race); })
+        .attr("y", function (d) { return y(d.with_mh); })
+        .attr("width", x.bandwidth())
+        .attr("height", function (d) { return height - y(d.with_mh); })
+        .style("fill", "#4285f4")
+        .attr("opacity", 0.8);
 
 
-        // add interactivity
-        g.selectAll(".bar")
-            .on("mouseover", function (d) {
-                d3.select("#" + d.race + "-label").style("display", "block");
-                d3.select("#" + d.race + "-percentage").style("display", "block");
-            })
-            .on("mouseout", function (d) {
-                d3.select("#" + d.race + "-label").style("display", "none");
-                d3.select("#" + d.race + "-percentage").style("display", "none");
-            })
+    // labels
+    g.selectAll(".label")
+        .data(data)
+        .enter().append("text")
+        .attr("class", "label")
+        .attr("id", function (d) { return d.race + "-label"; })
+        .attr("x", function (d) { return x(d.race) + x.bandwidth() / 2; })
+        .attr("y", function (d) { return y(d.total) - 5; })
+        .attr("text-anchor", "middle")
+        .style("display", "none")
+        .text(function (d) { return d.total; });
 
-        // add axes
-        g.append("g")
-            .attr("class", "axis axis-x")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x))
-            .selectAll("text")
-            .attr("transform", "rotate(45)")
-            .attr("dx", "10px")
-            .attr("dy", "10px")
-            .style("text-anchor", "start")
-
-        g.append("g")
-            .attr("class", "axis axis-y")
-            .call(d3.axisLeft(y).ticks(5));
-
-        // add legend
-        var legend = svg.append("g")
-            .attr("class", "legend")
-            .attr("transform", "translate(" + (width - 120) + ", 20)");
-
-        legend.append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", 12)
-            .attr("height", 12)
-            .attr("fill", "#FF5733")
-            .attr("opacity", 0.8);
-
-        legend.append("text")
-            .attr("x", 20)
-            .attr("y", 10)
-            .attr("dy", "0.32em")
-            .text("Total");
-
-        legend.append("rect")
-            .attr("x", 0)
-            .attr("y", 20)
-            .attr("width", 12)
-            .attr("height", 12)
-            .attr("fill", "#4285f4")
-            .attr("opacity", 0.8);
-
-        legend.append("text")
-            .attr("x", 20)
-            .attr("y", 30)
-            .attr("dy", "0.32em")
-            .text("Mental Illness");
-
-        // add axis label
-        g.append("text")
-            .attr("class", "axis-label")
-            .attr("x", width / 2 + margin.left)
-            .attr("y", height + margin.top + margin.bottom - 60)
-            .attr("text-anchor", "middle")
-            .text("race");
-
-        g.append("text")
-            .attr("class", "axis-label")
-            .attr("x", -height / 2 - margin.top)
-            .attr("y", margin.left - 100)
-            .attr("text-anchor", "middle")
-            .attr("transform", "rotate(-90)")
-            .style("text-anchor", "middle")
-            .text("Number of Police Shootings");
-        /* end of adapted code */
-
-        // add colour
-        const colour = d3.scaleOrdinal()
-            .domain(raceData.map(d => d.race))
-            .range(d3.schemeSet2);
+    g.selectAll(".percentage")
+        .data(data)
+        .enter().append("text")
+        .attr("class", "percentage")
+        .attr("id", function (d) { return d.race + "-percentage"; })
+        .attr("x", function (d) { return x(d.race) + x.bandwidth() / 2; })
+        .attr("y", function (d) { return y(d.with_mh) - 5; })
+        .attr("text-anchor", "middle")
+        .style("display", "none")
+        .text(function (d) { return d.percentage; });
 
 
+    // add interactivity
+    g.selectAll(".bar")
+        .on("mouseover", function (d) {
+            d3.select("#" + d.race + "-label").style("display", "block");
+            d3.select("#" + d.race + "-percentage").style("display", "block");
+        })
+        .on("mouseout", function (d) {
+            d3.select("#" + d.race + "-label").style("display", "none");
+            d3.select("#" + d.race + "-percentage").style("display", "none");
+        })
 
-    
+    // add axes
+    g.append("g")
+        .attr("class", "axis axis-x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "rotate(45)")
+        .attr("dx", "10px")
+        .attr("dy", "10px")
+        .style("text-anchor", "start")
+
+    g.append("g")
+        .attr("class", "axis axis-y")
+        .call(d3.axisLeft(y).ticks(5));
+
+    // add legend
+    var legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", "translate(" + (width - 120) + ", 20)");
+
+    legend.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", 12)
+        .attr("height", 12)
+        .attr("fill", "#FF5733")
+        .attr("opacity", 0.8);
+
+    legend.append("text")
+        .attr("x", 20)
+        .attr("y", 10)
+        .attr("dy", "0.32em")
+        .text("Without mental illness signs");
+
+    legend.append("rect")
+        .attr("x", 0)
+        .attr("y", 20)
+        .attr("width", 12)
+        .attr("height", 12)
+        .attr("fill", "#4285f4")
+        .attr("opacity", 0.8);
+
+    legend.append("text")
+        .attr("x", 20)
+        .attr("y", 30)
+        .attr("dy", "0.32em")
+        .text("With mental illness signs");
+
+    // add axis label
+
     /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
+    g.append("text")
+        .attr("class", "axis-label")
+        .attr("x", width / 2 + margin.left)
+        .attr("y", height + margin.top + margin.bottom - 80)
+        .attr("text-anchor", "middle")
+        .text("Race");
+
+    g.append("text")
+        .attr("class", "axis-label")
+        .attr("x", -height / 2 - margin.top)
+        .attr("y", margin.left - 120)
+        .attr("text-anchor", "middle")
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "middle")
+        .text("Number of Police Shootings");
 
     /* end of adapted code */
 
