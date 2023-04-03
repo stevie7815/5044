@@ -2,7 +2,8 @@
 <html>
 
 <head>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
 
     <title>CS5044: Practical 2 </title>
     <meta charset="utf-8" />
@@ -44,7 +45,7 @@
                     <b>Police Shootings and Year by Health</b>
                 </a>
             </div>
-            <div class="category_cards_active">
+            <div class="category_cards">
                 <a href="psmhbar.html">
                     <b>Police Shootings by Mental Health (bar chart)</b>
                 </a>
@@ -74,7 +75,7 @@
         <h1>Police Shootings by Race</h1>
 
 
-        <svg id="raceChart" width="600" height="400"></svg>
+        <svg width="960" height="500"></svg>
 
     </main>
 
@@ -89,100 +90,206 @@
 
 
 <script>
-
-    // set dimensions and margins
-    var margin = {
-        top: 20,
-        right: 20,
-        bottom: 30,
-        left: 40
-    };
-    var width = 600 - margin.left - margin.right;
-    var height = 400 - margin.top - margin.bottom;
-
-    // create svg for race chart
-    var svgRace = d3.select("#raceChart")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.left + margin.right)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    d3.csv("data/dataset.csv").then(function (data) {
-
-        //////* SD302: POLICE SHOOTINGS BY RACE *///////
-
-        // process data
-        const raceCounts = d3.rollup(data, v => v.length, d => d.race);
-        const raceData = Array.from(raceCounts, d => ({ race: d[0], count: d[1] }));
-        raceData.sort((a, b) => d3.descending(a.count, b.count));
-
-
-        // x y scales
-        const x = d3.scaleBand()
-            .domain(raceData.map(d => d.race))
-            .range([0, width])
-            .padding(0.1);
-
-        const y = d3.scaleLinear()
-            .domain([0, d3.max(raceData, d => d.count)])
-            .range([height, 0])
-
-
-        // create x axis
-        const xAxis = d3.axisBottom(x);
-
-        svgRace.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-
-        /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
-        svgRace.append("text")  // x axis label
-            .attr("x", width / 2)
-            .attr("y", height + margin.bottom - -10)
-            .style("text-anchor", "middle")
-            .text("Race");
-        /* end of adapted code */
-
-        // create y axis
-        const yAxis = d3.axisLeft(y);
-
-        svgRace.append("g")
-            .call(yAxis);
-
-        /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
-        svgRace.append("text")  // x axis label
-            .attr("x", -height / 2)
-            .attr("y", -margin.left + 10)
-            .attr("transform", "rotate(-90)")
-            .style("text-anchor", "middle")
-            .text("Number of Shootings");
-        /* end of adapted code */
-
-        // add colour
-        const colour = d3.scaleOrdinal()
-            .domain(raceData.map(d => d.race))
-            .range(d3.schemeSet2);
+    // prepare data
+    var data = [
+        {
+            race: "Asian",
+            total: 143,
+            with_mh: 33,
+            percentage: "23%"
+        },
+        {
+            race: "Black",
+            total: 1926,
+            with_mh: 260,
+            percentage: "12%"
+        },
+        {
+            race: "Hispanic",
+            total: 1291,
+            with_mh: 209,
+            percentage: "16%"
+        },
+        {
+            race: "Native American",
+            total: 111,
+            with_mh: 18,
+            percentage: "16%"
+        },
+        {
+            race: "White",
+            total: 3657,
+            with_mh: 985,
+            percentage: "27%"
+        },
+        {
+            race: "Other",
+            total: 20,
+            with_mh: 6,
+            percentage: "30%"
+        },
+        {
+            race: "Unknown",
+            total: 1149,
+            with_mh: 181,
+            percentage: "16%"
+        }
+    ];
 
 
+    //////* SD302: POLICE SHOOTINGS BY RACE *///////
 
+    var svg = d3.select("svg"),
+            margin = {
+                top: 20,
+                right: 30,
+                bottom: 100,
+                left: 60
+            },
+            width = +svg.attr("width") - margin.left - margin.right,
+            height = +svg.attr("height") - margin.top - margin.bottom,
+            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        // create bars
-        svgRace.selectAll(".bar")
-            .data(raceData)
+        // x y scale
+        var x = d3.scaleBand()
+            .rangeRound([0, width])
+            .paddingInner(0.2)
+            .domain(data.map(function (d) { return d.race; }));
+
+        var y = d3.scaleLinear()
+            .rangeRound([height, 0])
+            .domain([0, d3.max(data, function (d) { return d.with_mh + d.total; })]);
+
+        // add bars
+        g.selectAll(".bar.total")
+            .data(data)
             .enter().append("rect")
-            .attr("x", d => x(d.race))
-            .attr("y", d => y(d.count)) // position bar from bottom
+            .attr("class", "bar total")
+            .attr("x", function (d) { return x(d.race); })
+            .attr("y", function (d) { return y(d.total); })
             .attr("width", x.bandwidth())
-            .attr("height", d => height - y(d.count)) // height relative to the bottom
-            .attr("fill", d => colour(d.race)) // add colour to bars
+            .attr("height", function (d) { return height - y(d.total); })
+            .style("fill", "#FF5733")
+            .attr("opacity", 0.8);
+
+        // add bars
+        g.selectAll(".bar.with-mh")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar with-mh")
+            .attr("x", function (d) { return x(d.race); })
+            .attr("y", function (d) { return y(d.with_mh); })
+            .attr("width", x.bandwidth())
+            .attr("height", function (d) { return height - y(d.with_mh); })
+            .style("fill", "#4285f4")
+            .attr("opacity", 0.8);
+
+
+        // labels
+        g.selectAll(".label")
+            .data(data)
+            .enter().append("text")
+            .attr("class", "label")
+            .attr("id", function (d) { return d.race + "-label"; })
+            .attr("x", function (d) { return x(d.race) + x.bandwidth() / 2; })
+            .attr("y", function (d) { return y(d.total) - 5; })
+            .attr("text-anchor", "middle")
+            .style("display", "none")
+            .text(function (d) { return d.total; });
+
+        g.selectAll(".percentage")
+            .data(data)
+            .enter().append("text")
+            .attr("class", "percentage")
+            .attr("id", function (d) { return d.race + "-percentage"; })
+            .attr("x", function (d) { return x(d.race) + x.bandwidth() / 2; })
+            .attr("y", function (d) { return y(d.with_mh) - 5; })
+            .attr("text-anchor", "middle")
+            .style("display", "none")
+            .text(function (d) { return d.percentage; });
+
+
+        // add interactivity
+        g.selectAll(".bar")
+            .on("mouseover", function (d) {
+                d3.select("#" + d.race + "-label").style("display", "block");
+                d3.select("#" + d.race + "-percentage").style("display", "block");
+            })
+            .on("mouseout", function (d) {
+                d3.select("#" + d.race + "-label").style("display", "none");
+                d3.select("#" + d.race + "-percentage").style("display", "none");
+            })
+
+        // add axes
+        g.append("g")
+            .attr("class", "axis axis-x")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+            .attr("transform", "rotate(45)")
+            .attr("dx", "10px")
+            .attr("dy", "10px")
+            .style("text-anchor", "start")
+
+        g.append("g")
+            .attr("class", "axis axis-y")
+            .call(d3.axisLeft(y).ticks(5));
+
+        // add legend
+        var legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", "translate(" + (width - 120) + ", 20)");
+
+        legend.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 12)
+            .attr("height", 12)
+            .attr("fill", "#FF5733")
+            .attr("opacity", 0.8);
+
+        legend.append("text")
+            .attr("x", 20)
+            .attr("y", 10)
+            .attr("dy", "0.32em")
+            .text("Total");
+
+        legend.append("rect")
+            .attr("x", 0)
+            .attr("y", 20)
+            .attr("width", 12)
+            .attr("height", 12)
+            .attr("fill", "#4285f4")
+            .attr("opacity", 0.8);
+
+        legend.append("text")
+            .attr("x", 20)
+            .attr("y", 30)
+            .attr("dy", "0.32em")
+            .text("Mental Illness");
+
+        // add axis label
+        g.append("text")
+            .attr("class", "axis-label")
+            .attr("x", width / 2 + margin.left)
+            .attr("y", height + margin.top + margin.bottom - 60)
+            .attr("text-anchor", "middle")
+            .text("race");
+
+        g.append("text")
+            .attr("class", "axis-label")
+            .attr("x", -height / 2 - margin.top)
+            .attr("y", margin.left - 100)
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .text("Number of Cases");
 
 
 
+    
+    /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
 
-    }).catch(function (error) {
-        console.log(error);
-    });
-
+    /* end of adapted code */
 
 
 </script>
