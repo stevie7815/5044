@@ -24,16 +24,18 @@
 
         <div class="categories_section">
             <div class="category_cards_active">
-                <b>Police Shootings by Race</b>
-            </div>
-            <div class="category_cards">
-                <a href="age.html">
-                    <b>Age Groups and Mental Health</b>
+                <a href="byRace.html">
+                    <b>Police Shootings by Race</b>
                 </a>
             </div>
             <div class="category_cards">
                 <a href="year.html">
                     <b>Police Shootings and Year by Health</b>
+                </a>
+            </div>
+            <div class="category_cards_active">
+                <a href="psmhbar.html">
+                    <b>Police Shootings by Mental Health (bar chart)</b>
                 </a>
             </div>
             <div class="category_cards">
@@ -46,6 +48,7 @@
                     <b>Victims with Signs of Mental Illness by State</b>
                 </a>
             </div>
+
             <div class="category_cards">
                 <a href="map.html">
                     <b>Map</b>
@@ -66,111 +69,112 @@
 
     <footer>
         <p>Created by: sd302 & ifz1</p>
-    </footer> 
+    </footer>
 
 </body>
+
 </html>
 
 
 
-    <script>
+<script>
 
-        // set dimensions and margins
-        var margin = {
-            top: 20,
-            right: 20,
-            bottom: 30,
-            left: 40
-        };
-        var width = 600 - margin.left - margin.right;
-        var height = 400 - margin.top - margin.bottom;
+    // set dimensions and margins
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 30,
+        left: 40
+    };
+    var width = 600 - margin.left - margin.right;
+    var height = 400 - margin.top - margin.bottom;
 
-        // create svg for race chart
-        var svgRace = d3.select("#raceChart")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.left + margin.right)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // create svg for race chart
+    var svgRace = d3.select("#raceChart")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.left + margin.right)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        d3.csv("data/dataset.csv").then(function (data) {
+    d3.csv("data/dataset.csv").then(function (data) {
 
-            //////* SD302: POLICE SHOOTINGS BY RACE *///////
+        //////* SD302: POLICE SHOOTINGS BY RACE *///////
 
-            // process data
-            const raceCounts = d3.rollup(data, v => v.length, d => d.race);
-            const raceData = Array.from(raceCounts, d => ({ race: d[0], count: d[1] }));
-            raceData.sort((a, b) => d3.descending(a.count, b.count));
-
-
-            // x y scales
-            const x = d3.scaleBand()
-                .domain(raceData.map(d => d.race))
-                .range([0, width])
-                .padding(0.1);
-
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(raceData, d => d.count)])
-                .range([height, 0])
+        // process data
+        const raceCounts = d3.rollup(data, v => v.length, d => d.race);
+        const raceData = Array.from(raceCounts, d => ({ race: d[0], count: d[1] }));
+        raceData.sort((a, b) => d3.descending(a.count, b.count));
 
 
-            // create x axis
-            const xAxis = d3.axisBottom(x);
+        // x y scales
+        const x = d3.scaleBand()
+            .domain(raceData.map(d => d.race))
+            .range([0, width])
+            .padding(0.1);
 
-            svgRace.append("g")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-
-            /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
-            svgRace.append("text")  // x axis label
-                .attr("x", width / 2)
-                .attr("y", height + margin.bottom - -10)
-                .style("text-anchor", "middle")
-                .text("Race");
-            /* end of adapted code */
-
-            // create y axis
-            const yAxis = d3.axisLeft(y);
-
-            svgRace.append("g")
-                .call(yAxis);
-
-            /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
-            svgRace.append("text")  // x axis label
-                .attr("x", -height / 2)
-                .attr("y", -margin.left + 10)
-                .attr("transform", "rotate(-90)")
-                .style("text-anchor", "middle")
-                .text("Number of Shootings");
-            /* end of adapted code */
-
-            // add colour
-            const colour = d3.scaleOrdinal()
-                .domain(raceData.map(d => d.race))
-                .range(d3.schemeSet2);
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(raceData, d => d.count)])
+            .range([height, 0])
 
 
+        // create x axis
+        const xAxis = d3.axisBottom(x);
 
+        svgRace.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
-            // create bars
-            svgRace.selectAll(".bar")
-                .data(raceData)
-                .enter().append("rect")
-                .attr("x", d => x(d.race))
-                .attr("y", d => y(d.count)) // position bar from bottom
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.count)) // height relative to the bottom
-                .attr("fill", d => colour(d.race)) // add colour to bars
+        /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
+        svgRace.append("text")  // x axis label
+            .attr("x", width / 2)
+            .attr("y", height + margin.bottom - -10)
+            .style("text-anchor", "middle")
+            .text("Race");
+        /* end of adapted code */
+
+        // create y axis
+        const yAxis = d3.axisLeft(y);
+
+        svgRace.append("g")
+            .call(yAxis);
+
+        /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
+        svgRace.append("text")  // x axis label
+            .attr("x", -height / 2)
+            .attr("y", -margin.left + 10)
+            .attr("transform", "rotate(-90)")
+            .style("text-anchor", "middle")
+            .text("Number of Shootings");
+        /* end of adapted code */
+
+        // add colour
+        const colour = d3.scaleOrdinal()
+            .domain(raceData.map(d => d.race))
+            .range(d3.schemeSet2);
 
 
 
 
-        }).catch(function (error) {
-            console.log(error);
-        });
+        // create bars
+        svgRace.selectAll(".bar")
+            .data(raceData)
+            .enter().append("rect")
+            .attr("x", d => x(d.race))
+            .attr("y", d => y(d.count)) // position bar from bottom
+            .attr("width", x.bandwidth())
+            .attr("height", d => height - y(d.count)) // height relative to the bottom
+            .attr("fill", d => colour(d.race)) // add colour to bars
 
 
 
-    </script>
+
+    }).catch(function (error) {
+        console.log(error);
+    });
+
+
+
+</script>
 </body>
 
 </html>
