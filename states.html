@@ -43,12 +43,12 @@
                     <b>Police Shootings by Mental Health (bar chart)</b>
                 </a>
             </div>
-            <div class="category_cards_active">
+            <div class="category_cards">
                 <a href="ageLinegraph.html">
                     <b>Police Shootings and Age by Mental Health</b>
                 </a>
             </div>
-            <div class="category_cards">
+            <div class="category_cards_active">
                 <a href="states.html">
                     <b>Victims with Signs of Mental Illness by State</b>
                 </a>
@@ -66,7 +66,7 @@
         </div>
         <h1>Police Shootings by Mental Health (bar chart)</h1>
 
-        <svg width="1200" height="600"></svg>
+        <svg width="1300" height="700"></svg>
 
     </main>
     <!--<footer>
@@ -388,7 +388,7 @@
         var svg = d3.select("svg"),
             margin = {
                 top: 20,
-                right: 30,
+                right: 130,
                 bottom: 100,
                 left: 60
             },
@@ -498,7 +498,7 @@
             .attr("x", 20)
             .attr("y", 10)
             .attr("dy", "0.32em")
-            .text("Total");
+            .text("Shootings without mental illness signs");
 
         legend.append("rect")
             .attr("x", 0)
@@ -512,7 +512,7 @@
             .attr("x", 20)
             .attr("y", 30)
             .attr("dy", "0.32em")
-            .text("Mental Illness");
+            .text("Shootings with mental illness signs");
 
         // add axis label
         g.append("text")
@@ -520,7 +520,7 @@
             .attr("x", width / 2 + margin.left)
             .attr("y", height + margin.top + margin.bottom - 60)
             .attr("text-anchor", "middle")
-            .text("states");
+            .text("US States");
 
         g.append("text")
             .attr("class", "axis-label")
@@ -528,7 +528,7 @@
             .attr("y", margin.left - 100)
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
-            .text("Number of Cases");
+            .text("Number of Police Shootings");
 
 
     </script>

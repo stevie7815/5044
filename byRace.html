@@ -33,7 +33,7 @@
                     <b>Police Shootings and Year by Health</b>
                 </a>
             </div>
-            <div class="category_cards_active">
+            <div class="category_cards">
                 <a href="psmhbar.html">
                     <b>Police Shootings by Mental Health (bar chart)</b>
                 </a>
@@ -63,7 +63,7 @@
         <h1>Police Shootings by Race</h1>
 
 
-        <svg id="raceChart" width="600" height="400"></svg>
+        <svg id="raceChart" width="1000" height="600"></svg>
 
     </main>
 
@@ -82,12 +82,12 @@
     // set dimensions and margins
     var margin = {
         top: 20,
-        right: 20,
+        right: 80,
         bottom: 30,
-        left: 40
+        left: 70,
     };
-    var width = 600 - margin.left - margin.right;
-    var height = 400 - margin.top - margin.bottom;
+    var width = 1000 - margin.left - margin.right;
+    var height = 600 - margin.top - margin.bottom;
 
     // create svg for race chart
     var svgRace = d3.select("#raceChart")
@@ -141,10 +141,10 @@
         /* code adapted from http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html */
         svgRace.append("text")  // x axis label
             .attr("x", -height / 2)
-            .attr("y", -margin.left + 10)
+            .attr("y", -margin.left + 12)
             .attr("transform", "rotate(-90)")
             .style("text-anchor", "middle")
-            .text("Number of Shootings");
+            .text("Number of Police Shootings");
         /* end of adapted code */
 
         // add colour
