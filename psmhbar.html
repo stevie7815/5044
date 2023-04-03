@@ -24,7 +24,7 @@
         <div class="center">
             <p>The dataset used is based on a database of police shootings from The Washington Post. It includes data on
                 fatal shootings by police in the United States from 2015 to now.</p>
-            <br><a class="dataset" href="dataset.csv" target="_blank">Data Set</a>
+            <br><a class="dataset" href="data/dataset.csv" target="_blank">Data Set</a>
         </div>
         <br>
         </div>
@@ -76,7 +76,7 @@
         </div>
         <h1>Police Shootings by Mental Health (bar chart)</h1>
 
-        <svg width="960" height="500"></svg>
+        <svg width="1100" height="550"></svg>
 
     </main>
     <footer>
@@ -147,7 +147,7 @@
         var svg = d3.select("svg"),
             margin = {
                 top: 20,
-                right: 30,
+                right: 120,
                 bottom: 100,
                 left: 60
             },
@@ -252,7 +252,7 @@
             .attr("x", 20)
             .attr("y", 10)
             .attr("dy", "0.32em")
-            .text("Total");
+            .text("Shootings without mental illness signs");
 
         legend.append("rect")
             .attr("x", 0)
@@ -266,7 +266,7 @@
             .attr("x", 20)
             .attr("y", 30)
             .attr("dy", "0.32em")
-            .text("Mental Illness");
+            .text("Shootings with mental illness signs");
 
         // add axis label
         g.append("text")
@@ -282,7 +282,7 @@
             .attr("y", margin.left - 100)
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
-            .text("Number of Shootings");
+            .text("Number of Police Shootings");
 
 
     </script>

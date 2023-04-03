@@ -21,7 +21,7 @@
         <div class="center">
             <p>The dataset used is based on a database of police shootings from The Washington Post. It includes data on
                 fatal shootings by police in the United States from 2015 to now.</p>
-            <br><a class="dataset" href="dataset.csv" target="_blank">Data Set</a>
+            <br><a class="dataset" href="data/dataset.csv" target="_blank">Data Set</a>
         </div>
         <br>
         </div>
@@ -240,7 +240,7 @@
                 div.transition()
                     .duration(100)
                     .style("opacity", 1)
-                div.html("Killed: " + (i[1]) + "<br/>" + "Age: " + (i[0]))
+                div.html("Police Shootings: " + (i[1]) + "<br/>" + "Age: " + (i[0]))
                     .style("left", (d.pageX) + "px")
                     .style("top", (d.pageY - 28) + "px");
                 })

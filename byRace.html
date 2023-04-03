@@ -21,7 +21,7 @@
         <div class="center">
             <p>The dataset used is based on a database of police shootings from The Washington Post. It includes data on
                 fatal shootings by police in the United States from 2015 to now.</p>
-            <br><a class="dataset" href="dataset.csv" target="_blank">Data Set</a>
+            <br><a class="dataset" href="data/dataset.csv" target="_blank">Data Set</a>
         </div>
         <br>
         </div>
@@ -45,6 +45,7 @@
                     <b>Police Shootings and Year by Health</b>
                 </a>
             </div>
+            <div class="category_cards">
             <div class="category_cards">
                 <a href="psmhbar.html">
                     <b>Police Shootings by Mental Health (bar chart)</b>
@@ -75,7 +76,7 @@
         <h1>Police Shootings by Race</h1>
 
 
-        <svg width="960" height="500"></svg>
+        <svg id="raceChart" width="1000" height="600"></svg>
 
     </main>
 
@@ -282,7 +283,14 @@
             .attr("y", margin.left - 100)
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
-            .text("Number of Cases");
+            .style("text-anchor", "middle")
+            .text("Number of Police Shootings");
+        /* end of adapted code */
+
+        // add colour
+        const colour = d3.scaleOrdinal()
+            .domain(raceData.map(d => d.race))
+            .range(d3.schemeSet2);
 
 
 
