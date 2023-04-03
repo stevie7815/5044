@@ -78,6 +78,7 @@ div.tooltip {
     border-radius: 10px;
     pointer-events: none;
     font-size: .7rem;
+    height: fit-content;
 }
 
 /* 
