@@ -20,6 +20,13 @@ hr {
     margin: auto;
 }
 
+.center {
+    margin: auto;
+    width: 80%;
+    padding: 10px;
+    text-align: center;
+}
+
 footer {
     position: fixed;
     left: 0;
@@ -81,56 +88,10 @@ div.tooltip {
     height: fit-content;
 }
 
-/* 
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-.x.axis path{
-    display: none;
-}
-
-.legend {
-    font-size: 14px;
-    font-family: sans-serif;
-    fill: #000;
-}
-*/
-
-/*.chart {
-    width: 800px;
-    height: 500px;
-    margin: 0 auto;
-}
 
 .bar {
     fill: steelblue;
 }
-
-.bar:hover{
-    fill: orange;
-}
-
-.tooltip {
-    position: absolute;
-    background-color: white;
-    border: 1px solid black;
-    padding: 10px;
-    display: none;
-}
-
-*/
-
-.chart{
-}
-
-.bar {
-    fill: steelblue;
-}
-
 
 
 .axis,
@@ -147,7 +108,7 @@ div.tooltip {
 }
 
 .axis text {
-    font-family:sans-serif;
+    font-family: sans-serif;
 }
 
 .title {
@@ -194,7 +155,8 @@ div.tooltip {
     color: black;
 }
 
-.category_cards_active, .category_cards:hover {
+.category_cards_active,
+.category_cards:hover {
     transition: 0.5s;
     width: 15%;
     /* allows 5 cards to fit in a line when margin is considered (w/o margin, 6) */
@@ -206,4 +168,3 @@ div.tooltip {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.5);
     cursor: pointer;
 }
-
