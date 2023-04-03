@@ -162,7 +162,7 @@
         svg.append("path")
             .datum(mentalIllness)
             .attr("fill", "none")
-            .attr("stroke", "steelblue")
+            .attr("stroke", "#4285f4")
             .attr("stroke-width", 2)
             .attr("d", lineGenerator1) // Use the "d" attribute to specify the line function
             .attr("transform", `translate(${margin.left}, ${margin.top})`)
@@ -174,7 +174,7 @@
             .attr("r", 5)
             .attr("cx", function (d) { return xScale(new Date(d[0], 0)); })
             .attr("cy", function (d) { return yScale(d[1]); })
-            .attr("stroke", "steelblue")
+            .attr("stroke", "#4285f4")
             .attr("fill", "white")
             .attr("transform", `translate(${margin.left}, ${margin.top})`)
             .on('mouseover', function (d, i) {
@@ -201,7 +201,7 @@
         svg.append("path")
             .datum(noMentalIllness)
             .attr("fill", "none")
-            .attr("stroke", "orange")
+            .attr("stroke", "#FF5733")
             .attr("stroke-width", 2)
             .attr("d", lineGenerator2)
             .attr("transform", `translate(${margin.left}, ${margin.top})`)
@@ -212,7 +212,7 @@
             .attr("r", 5)
             .attr("cx", function (d) { return xScale(new Date(d[0], 0)); })
             .attr("cy", function (d) { return yScale(d[1]); })
-            .attr("stroke", "orange")
+            .attr("stroke", "#FF5733")
             .attr("fill", "white")
             .attr("transform", `translate(${margin.left}, ${margin.top})`)
             .on('mouseover', function (d, i) {
@@ -240,13 +240,13 @@
             .attr("cx", 1000)
             .attr("cy", 70)
             .attr("r", 7)
-            .style("fill", "orange")
+            .style("fill", "#FF5733")
 
         svg.append("circle")
             .attr("cx", 1000)
             .attr("cy", 100)
             .attr("r", 7)
-            .style("fill", "steelblue")
+            .style("fill", "#4285f4")
 
         svg.append("text")
             .attr("x", 1020)
